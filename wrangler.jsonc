@@ -1,0 +1,11 @@
+{
+  "name": "la-sarita-carta",
+  "compatibility_date": "2026-11-16",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": ".",
+    "not_found_handling": "single-page-application"
+  }
+}
