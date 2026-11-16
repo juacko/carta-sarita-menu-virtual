@@ -1,0 +1,139 @@
+{
+  "schemaVersion": "1.0.0",
+  "system": "RESTOPOS-READY",
+  "updatedAt": "2026-11-16",
+  "categories": [
+    {
+      "id": "cat-alitas",
+      "slug": "festival-de-alitas",
+      "name": "Festival de Alitas",
+      "displayTitle": "¡Festival de Alitas!",
+      "description": "Alitas acompañadas de papas fritas. Elige tu cantidad y combínalas con nuestros 13 sabores.",
+      "icon": "wings",
+      "order": 1,
+      "available": true
+    },
+    {
+      "id": "cat-combinados",
+      "slug": "combinados",
+      "name": "Combinados",
+      "displayTitle": "Combinados",
+      "description": "Platos contundentes con elección de Pastas (Huancaína o Pesto), Arroz (Chaufa o al Olivo) o Arroz Blanco.",
+      "icon": "plate",
+      "order": 2,
+      "available": true
+    },
+    {
+      "id": "cat-parrillas",
+      "slug": "parrillas",
+      "name": "Parrillas",
+      "displayTitle": "Parrillas",
+      "description": "Carnes al grill acompañadas de Papas y Ensalada, Arroz (Chaufa o al Olivo) o Pastas (Huancaína o Pesto).",
+      "icon": "grill",
+      "order": 3,
+      "available": true
+    },
+    {
+      "id": "cat-caja-china",
+      "slug": "caja-china",
+      "name": "Caja China",
+      "displayTitle": "Caja China",
+      "description": "Especialidad preparada en Caja China. Disponible solo domingos.",
+      "badge": "Solo Domingos",
+      "availableDays": [0],
+      "icon": "roast",
+      "order": 4,
+      "available": true
+    },
+    {
+      "id": "cat-hamburguesas",
+      "slug": "hamburguesas",
+      "name": "Hamburguesas",
+      "displayTitle": "¡Hamburguesas!",
+      "description": "Sánguches ganadores y hamburguesas artesanales de pollo, res o cordero.",
+      "icon": "burger",
+      "order": 5,
+      "available": true
+    },
+    {
+      "id": "cat-caldos-y-sopas",
+      "slug": "caldos-y-sopas",
+      "name": "Caldos y Sopas",
+      "displayTitle": "Caldos y Sopas",
+      "description": "Acompañados de canchita, pan tostado, rocoto y limón.",
+      "icon": "soup",
+      "order": 6,
+      "available": true
+    },
+    {
+      "id": "cat-salchipapas",
+      "slug": "salchipapas",
+      "name": "Salchipapas",
+      "displayTitle": "Salchipapas",
+      "description": "Con papas andinas, chorizo a las finas hierbas y hotdog ahumado.",
+      "icon": "fries",
+      "order": 7,
+      "available": true
+    },
+    {
+      "id": "cat-pizzas",
+      "slug": "pizzas",
+      "name": "Pizzas",
+      "displayTitle": "Pizzas",
+      "description": "Disponibles en tamaño Mediana (4 piezas) y Familiar (8 piezas).",
+      "icon": "pizza",
+      "order": 8,
+      "available": true
+    },
+    {
+      "id": "cat-promociones",
+      "slug": "promociones",
+      "name": "Promociones",
+      "displayTitle": "Promociones",
+      "description": "Promociones especiales en Pizzas e incluye combos con Chicha Morada en Festival de Alitas.",
+      "icon": "promo",
+      "order": 9,
+      "available": true
+    },
+    {
+      "id": "cat-cocktail",
+      "slug": "cocktail",
+      "name": "Cocktail",
+      "displayTitle": "Cocktail",
+      "description": "Sours y mojitos disponibles en copa/vaso personal o por litro.",
+      "icon": "cocktail",
+      "order": 10,
+      "available": true
+    },
+    {
+      "id": "cat-postres",
+      "slug": "postres",
+      "name": "Postres",
+      "displayTitle": "Postres",
+      "description": "Wafles, helados, frappes y milkshakes.",
+      "icon": "dessert",
+      "order": 11,
+      "available": true
+    },
+    {
+      "id": "cat-cervezas",
+      "slug": "cervezas",
+      "name": "Cervezas",
+      "displayTitle": "Cervezas",
+      "description": "Cervezas personales en botella de 330 ml.",
+      "icon": "beer",
+      "order": 12,
+      "available": true
+    },
+    {
+      "id": "cat-bebidas",
+      "slug": "bebidas",
+      "name": "Bebidas",
+      "displayTitle": "Bebidas",
+      "description": "Limonadas, refrescos, jugos naturales, gaseosas, emoliente e infusiones.",
+      "icon": "drink",
+      "order": 13,
+      "available": true
+    }
+  ]
+}

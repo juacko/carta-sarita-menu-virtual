@@ -1,0 +1,87 @@
+{
+  "schemaVersion": "1.0.0",
+  "system": "RESTOPOS-READY",
+  "updatedAt": "2026-11-16",
+  "promotions": [
+    {
+      "id": "promo-pizzas-2x60",
+      "categoryId": "cat-promociones",
+      "relatedCategoryId": "cat-pizzas",
+      "name": "Promoción Pizzas 2 x S/ 60",
+      "subtitle": "2x60 (Americana y Pepperoni)",
+      "description": "Elige 2 pizzas entre Americana y Peperoni por S/ 60.00.",
+      "basePrice": 60.00,
+      "badge": "Promo 2x60",
+      "image": "assets/products/promo-pizzas-2x60.webp",
+      "available": true,
+      "variantGroups": [
+        {
+          "id": "grp-promo60-pizza-1",
+          "name": "Primera Pizza",
+          "type": "single",
+          "required": true,
+          "min": 1,
+          "max": 1,
+          "options": [
+            { "id": "opt-p60-1-americana", "name": "Americana", "priceDelta": 0, "available": true },
+            { "id": "opt-p60-1-peperoni", "name": "Peperoni", "priceDelta": 0, "available": true }
+          ]
+        },
+        {
+          "id": "grp-promo60-pizza-2",
+          "name": "Segunda Pizza",
+          "type": "single",
+          "required": true,
+          "min": 1,
+          "max": 1,
+          "options": [
+            { "id": "opt-p60-2-americana", "name": "Americana", "priceDelta": 0, "available": true },
+            { "id": "opt-p60-2-peperoni", "name": "Peperoni", "priceDelta": 0, "available": true }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "promo-pizzas-2x70",
+      "categoryId": "cat-promociones",
+      "relatedCategoryId": "cat-pizzas",
+      "name": "Promoción Pizzas 2 x S/ 70",
+      "subtitle": "2x70 (Hawaiana, Tocino, Pollo, Suprema)",
+      "description": "Elige 2 pizzas entre Hawaiana, Al Tocino, Al Pollo y Suprema Especial por S/ 70.00.",
+      "basePrice": 70.00,
+      "badge": "Promo 2x70",
+      "image": "assets/products/promo-pizzas-2x70.webp",
+      "available": true,
+      "variantGroups": [
+        {
+          "id": "grp-promo70-pizza-1",
+          "name": "Primera Pizza",
+          "type": "single",
+          "required": true,
+          "min": 1,
+          "max": 1,
+          "options": [
+            { "id": "opt-p70-1-hawaiana", "name": "Hawaiana", "priceDelta": 0, "available": true },
+            { "id": "opt-p70-1-tocino", "name": "Al Tocino", "priceDelta": 0, "available": true },
+            { "id": "opt-p70-1-pollo", "name": "Al Pollo", "priceDelta": 0, "available": true },
+            { "id": "opt-p70-1-suprema", "name": "Suprema Especial", "priceDelta": 0, "available": true }
+          ]
+        },
+        {
+          "id": "grp-promo70-pizza-2",
+          "name": "Segunda Pizza",
+          "type": "single",
+          "required": true,
+          "min": 1,
+          "max": 1,
+          "options": [
+            { "id": "opt-p70-2-hawaiana", "name": "Hawaiana", "priceDelta": 0, "available": true },
+            { "id": "opt-p70-2-tocino", "name": "Al Tocino", "priceDelta": 0, "available": true },
+            { "id": "opt-p70-2-pollo", "name": "Al Pollo", "priceDelta": 0, "available": true },
+            { "id": "opt-p70-2-suprema", "name": "Suprema Especial", "priceDelta": 0, "available": true }
+          ]
+        }
+      ]
+    }
+  ]
+}
