@@ -1,0 +1,3 @@
+# Configuración de rutas estáticas para Cloudflare Pages
+# Mantiene todos los recursos estáticos y redirige rutas limpias hacia index.html conservando ?mesa=XX
+/*    /index.html   200
