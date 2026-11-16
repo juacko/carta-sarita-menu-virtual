@@ -1,6 +1,6 @@
 /**
- * Módulo de Checkout (FASE 6)
- * Implementa los 7 pasos del checkout, validación por modalidad (Salón / Delivery),
+ * Módulo de Checkout (FASE 6 + Modalidad Recoger / Para Llevar)
+ * Implementa los 7 pasos del checkout, validación por modalidad (Salón / Recoger / Delivery),
  * bloqueo de mesa detectada por QR, costo de delivery pendiente de confirmación
  * y protección de datos personales (sin guardar teléfonos ni direcciones en localStorage).
  */
@@ -10,7 +10,6 @@
   const CheckoutModule = {
     isOpen: false,
     hasOpenedWhatsApp: false,
-    // Datos del cliente solo en memoria (nunca se guardan en localStorage por privacidad)
     customerData: {
       name: '',
       phone: '',
@@ -65,9 +64,6 @@
       document.body.style.overflow = '';
     },
 
-    /**
-     * Limpia los datos personales en memoria al finalizar el proceso (Sección 12: Privacidad)
-     */
     clearPersonalData() {
       this.customerData = {
         name: '',
@@ -80,12 +76,14 @@
     },
 
     /**
-     * Valida los campos obligatorios según la modalidad seleccionada
+     * Valida los campos obligatorios según la modalidad seleccionada (Salón / Recoger / Delivery)
      */
     validateForm() {
       const CONFIG = window.LaSarita.CONFIG;
       const OrderTypeModule = window.LaSarita.OrderTypeModule;
-      const isSalon = OrderTypeModule.getOrderType() === CONFIG.orderTypes.DINE_IN;
+      const currentType = OrderTypeModule.getOrderType();
+      const isSalon = currentType === CONFIG.orderTypes.DINE_IN;
+      const isDelivery = currentType === CONFIG.orderTypes.DELIVERY;
 
       const errors = {};
       const nameClean = (this.customerData.name || '').trim();
@@ -109,7 +107,7 @@
           errors.table =
             'Indica tu número de mesa o marca que solicitarás asistencia al personal.';
         }
-      } else {
+      } else if (isDelivery) {
         const addressClean = (this.customerData.address || '').trim();
         const refClean = (this.customerData.reference || '').trim();
 
@@ -133,15 +131,21 @@
       const OrderTypeModule = window.LaSarita.OrderTypeModule;
       const CartModule = window.LaSarita.CartModule;
 
-      const isSalon = OrderTypeModule.getOrderType() === CONFIG.orderTypes.DINE_IN;
+      const currentType = OrderTypeModule.getOrderType();
+      const isSalon = currentType === CONFIG.orderTypes.DINE_IN;
+      const isPickup = currentType === CONFIG.orderTypes.PICKUP;
+      const isDelivery = currentType === CONFIG.orderTypes.DELIVERY;
+
       const subtotal = CartModule.getSubtotal();
       const deliveryCostDefined = CONFIG.delivery.costDefined;
       const deliveryCost =
-        !isSalon && deliveryCostDefined ? Number(CONFIG.delivery.baseCost) || 0 : null;
+        isDelivery && deliveryCostDefined ? Number(CONFIG.delivery.baseCost) || 0 : null;
 
       return {
-        orderType: OrderTypeModule.getOrderType(),
+        orderType: currentType,
         isSalon,
+        isPickup,
+        isDelivery,
         tableNumber: isSalon ? OrderTypeModule.tableNumber || null : null,
         isTableLockedFromQr: Boolean(OrderTypeModule.isTableLockedFromQr),
         needsStaffAssistanceForTable: isSalon
@@ -150,8 +154,8 @@
         customer: {
           name: (this.customerData.name || '').trim(),
           phone: (this.customerData.phone || '').trim(),
-          address: !isSalon ? (this.customerData.address || '').trim() : '',
-          reference: !isSalon ? (this.customerData.reference || '').trim() : ''
+          address: isDelivery ? (this.customerData.address || '').trim() : '',
+          reference: isDelivery ? (this.customerData.reference || '').trim() : ''
         },
         items: CartModule.getItems(),
         totalCount: CartModule.getTotalCount(),
@@ -160,16 +164,17 @@
         deliveryCost,
         deliveryPendingText: CONFIG.delivery.pendingMessage,
         deliveryNoticeText: CONFIG.delivery.noticeMessage,
-        finalTotal: isSalon
-          ? subtotal
-          : deliveryCostDefined
-          ? subtotal + deliveryCost
-          : null
+        finalTotal:
+          isSalon || isPickup
+            ? subtotal
+            : deliveryCostDefined
+            ? subtotal + deliveryCost
+            : null
       };
     },
 
     /**
-     * Renderiza el modal de Checkout con todos los pasos requeridos
+     * Renderiza el modal de Checkout con las 3 modalidades: Salón, Recoger (Llevar) y Delivery
      */
     render() {
       const { escapeHtml, formatCurrency } = window.LaSarita.Utils;
@@ -180,16 +185,19 @@
       const modalEl = document.getElementById('checkout-modal');
       if (!modalEl) return;
 
-      const isSalon = OrderTypeModule.getOrderType() === CONFIG.orderTypes.DINE_IN;
-      const isDelivery = OrderTypeModule.getOrderType() === CONFIG.orderTypes.DELIVERY;
+      const currentType = OrderTypeModule.getOrderType();
+      const isSalon = currentType === CONFIG.orderTypes.DINE_IN;
+      const isPickup = currentType === CONFIG.orderTypes.PICKUP;
+      const isDelivery = currentType === CONFIG.orderTypes.DELIVERY;
+
       const items = CartModule.getItems();
       const subtotal = CartModule.getSubtotal();
 
-      // Bloque de mesa en Consumo en Salón (nunca mostrar dirección en salón)
-      let salonTableHtml = '';
+      // Bloque de mesa en Consumo en Salón o aviso de Recoger en tienda
+      let modeContextHtml = '';
       if (isSalon) {
         if (OrderTypeModule.isTableLockedFromQr && OrderTypeModule.tableNumber) {
-          salonTableHtml = `
+          modeContextHtml = `
             <div class="table-qr-locked-box" role="status">
               <div>
                 <strong>🔒 Mesa N° ${escapeHtml(OrderTypeModule.tableNumber)}</strong>
@@ -199,7 +207,7 @@
             </div>
           `;
         } else {
-          salonTableHtml = `
+          modeContextHtml = `
             <div class="form-field ${this.errors.table ? 'has-error' : ''}">
               <label for="checkout-table-input" class="form-label">
                 Número de mesa <span class="req">*</span>
@@ -229,6 +237,15 @@
             </div>
           `;
         }
+      } else if (isPickup) {
+        modeContextHtml = `
+          <div class="table-qr-locked-box" role="status">
+            <div>
+              <strong>🛍️ Pedido para Recoger (Llevar)</strong>
+              <div>Prepararemos tu pedido empaquetado para que pases a recogerlo en el local.</div>
+            </div>
+          </div>
+        `;
       }
 
       // Campos exclusivos de Delivery (solo cuando es Delivery)
@@ -313,8 +330,9 @@
         `
         : '';
 
-      const totalsHtml = isSalon
-        ? `
+      let totalsHtml = '';
+      if (isSalon) {
+        totalsHtml = `
           <div class="checkout-totals-box">
             <div class="checkout-total-line">
               <span>Modalidad</span>
@@ -333,8 +351,26 @@
               <span class="total-amount">${formatCurrency(subtotal)}</span>
             </div>
           </div>
-        `
-        : `
+        `;
+      } else if (isPickup) {
+        totalsHtml = `
+          <div class="checkout-totals-box">
+            <div class="checkout-total-line">
+              <span>Modalidad</span>
+              <span>Recoger en local (Para Llevar)</span>
+            </div>
+            <div class="checkout-total-line">
+              <span>Subtotal de productos</span>
+              <span>${formatCurrency(subtotal)}</span>
+            </div>
+            <div class="checkout-total-line is-grand-total">
+              <span>Total a pagar</span>
+              <span class="total-amount">${formatCurrency(subtotal)}</span>
+            </div>
+          </div>
+        `;
+      } else {
+        totalsHtml = `
           <div class="checkout-totals-box">
             <div class="checkout-total-line">
               <span>Modalidad</span>
@@ -354,6 +390,13 @@
             </div>
           </div>
         `;
+      }
+
+      const step2Title = isSalon
+        ? 'Datos para atención en salón'
+        : isPickup
+        ? 'Datos para recoger tu pedido'
+        : 'Datos para entrega por Delivery';
 
       const postSendBoxHtml = this.hasOpenedWhatsApp
         ? `
@@ -400,7 +443,16 @@
                   data-checkout-mode="${CONFIG.orderTypes.DINE_IN}"
                 >
                   <span class="checkout-mode-icon" aria-hidden="true">🍽️</span>
-                  <span>Consumo en Salón</span>
+                  <span>En Salón</span>
+                </button>
+
+                <button
+                  type="button"
+                  class="checkout-mode-option ${isPickup ? 'is-selected' : ''}"
+                  data-checkout-mode="${CONFIG.orderTypes.PICKUP}"
+                >
+                  <span class="checkout-mode-icon" aria-hidden="true">🛍️</span>
+                  <span>Recoger (Llevar)</span>
                 </button>
 
                 <button
@@ -419,12 +471,12 @@
               <div class="checkout-step-header">
                 <h3 class="checkout-step-title">
                   <span class="checkout-step-number">2</span>
-                  <span>${isSalon ? 'Datos para atención en salón' : 'Datos para entrega por Delivery'}</span>
+                  <span>${escapeHtml(step2Title)}</span>
                 </h3>
               </div>
 
               <div class="checkout-form-grid">
-                ${salonTableHtml}
+                ${modeContextHtml}
 
                 <div class="form-field ${this.errors.name ? 'has-error' : ''}">
                   <label for="checkout-name-input" class="form-label">

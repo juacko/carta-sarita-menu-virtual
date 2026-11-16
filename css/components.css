@@ -2,13 +2,13 @@
  * Componentes reutilizables: cabecera, hero de identidad, botones, badges y pie de página
  */
 .site-header {
-  background-color: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(10px);
+  background-color: #ffffff;
   border-bottom: 1px solid var(--color-border);
   position: sticky;
   top: 0;
   z-index: 110;
   box-shadow: var(--shadow-xs);
+  transform: translateZ(0);
 }
 
 .header-inner {

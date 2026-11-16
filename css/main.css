@@ -1,5 +1,5 @@
 /**
- * Estilos base, reset y layout general
+ * Estilos base, reset y layout general (Optimizado para fluidez a 60/120 FPS)
  */
 *, *::before, *::after {
   box-sizing: border-box;
@@ -8,7 +8,6 @@
 }
 
 html {
-  scroll-behavior: smooth;
   scroll-padding-top: calc(var(--header-height) + var(--cat-nav-height) + 16px);
   -webkit-text-size-adjust: 100%;
 }
@@ -16,14 +15,13 @@ html {
 body {
   font-family: var(--font-sans);
   background-color: var(--color-bg);
-  background-image: radial-gradient(rgba(158, 43, 37, 0.03) 1px, transparent 0);
-  background-size: 24px 24px;
   color: var(--color-text);
   line-height: 1.5;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
 img {
@@ -52,6 +50,7 @@ button {
   border: none;
   background: none;
   -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 button:focus-visible,

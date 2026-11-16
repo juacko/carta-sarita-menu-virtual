@@ -28,6 +28,7 @@
     },
     orderTypes: {
       DINE_IN: 'salon',
+      PICKUP: 'llevar',
       DELIVERY: 'delivery'
     },
     delivery: {

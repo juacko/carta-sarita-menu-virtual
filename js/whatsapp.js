@@ -1,5 +1,5 @@
 /**
- * Módulo de Integración con WhatsApp Click to Chat (FASE 7)
+ * Módulo de Integración con WhatsApp Click to Chat (FASE 7 + Modalidad Recoger/Llevar)
  * Genera un mensaje estructurado, legible y codificado con encodeURIComponent
  * hacia el número comercial oficial +51 987090720 (https://wa.me/51987090720?text=...).
  */
@@ -7,11 +7,6 @@
   'use strict';
 
   const WhatsAppModule = {
-    /**
-     * Construye el texto estructurado del pedido con todos los datos requeridos
-     * @param {Object} orderSummary Objeto generado por CheckoutModule.buildOrderSummary()
-     * @returns {string}
-     */
     buildMessageText(orderSummary) {
       if (!orderSummary || !Array.isArray(orderSummary.items) || orderSummary.items.length === 0) {
         return '';
@@ -37,6 +32,8 @@
         } else if (orderSummary.needsStaffAssistanceForTable) {
           lines.push('📍 *Mesa:* Por asignar (Solicita asistencia del personal)');
         }
+      } else if (orderSummary.isPickup) {
+        lines.push('🛍️ *Modalidad:* PARA LLEVAR (RECOGER EN LOCAL)');
       } else {
         lines.push('🛵 *Modalidad:* DELIVERY');
       }
@@ -48,14 +45,14 @@
       lines.push(`👤 *Nombre:* ${orderSummary.customer.name}`);
       lines.push(`📞 *Teléfono:* ${orderSummary.customer.phone}`);
 
-      if (!orderSummary.isSalon) {
+      if (orderSummary.isDelivery) {
         lines.push(`🏠 *Dirección de entrega:* ${orderSummary.customer.address}`);
         lines.push(`🧭 *Referencia:* ${orderSummary.customer.reference}`);
       }
 
       lines.push('--------------------------------');
 
-      // 7. Productos, 8. Variantes, 9. Presentaciones, 10. Cantidades, 11. Observaciones, 12. Precio unitario, 13. Subtotales
+      // 7. Productos, variantes, presentaciones, cantidades, observaciones, precio unitario y subtotales
       lines.push('*DETALLE DEL PEDIDO:*');
 
       orderSummary.items.forEach((item, index) => {
@@ -64,20 +61,16 @@
         const itemSubtotal = qty * unitPrice;
 
         lines.push('');
-        lines.push(
-          `*${index + 1}. ${qty}x ${item.name}*`
-        );
+        lines.push(`*${index + 1}. ${qty}x ${item.name}*`);
         lines.push(
           `   • Precio unitario: ${formatCurrency(unitPrice)} | Subtotal: *${formatCurrency(itemSubtotal)}*`
         );
 
-        // Variantes / Presentaciones / Sabores / Tamaños / Proteínas / Acompañamientos
         const groupedVariants = CartModule.formatGroupedVariants(item.selectedOptions);
         groupedVariants.forEach(gv => {
           lines.push(`   • ${gv.groupName}: ${gv.valuesText}`);
         });
 
-        // Observaciones de cocina
         if (item.notes && item.notes.trim()) {
           lines.push(`   • Nota: _${item.notes.trim()}_`);
         }
@@ -87,9 +80,11 @@
       lines.push('--------------------------------');
 
       // 14. Total de productos y 15. Información del costo de delivery si está pendiente
-      lines.push(`🧾 *Total de productos (${orderSummary.totalCount} unid.):* ${formatCurrency(orderSummary.subtotal)}`);
+      lines.push(
+        `🧾 *Total de productos (${orderSummary.totalCount} unid.):* ${formatCurrency(orderSummary.subtotal)}`
+      );
 
-      if (orderSummary.isSalon) {
+      if (orderSummary.isSalon || orderSummary.isPickup) {
         lines.push(`💰 *TOTAL DEL PEDIDO:* *${formatCurrency(orderSummary.subtotal)}*`);
       } else {
         if (orderSummary.deliveryCostDefined && typeof orderSummary.deliveryCost === 'number') {
@@ -97,7 +92,9 @@
           lines.push(`💰 *TOTAL DEFINITIVO:* *${formatCurrency(orderSummary.finalTotal)}*`);
         } else {
           lines.push(`🛵 *Costo de delivery:* ${orderSummary.deliveryPendingText}`);
-          lines.push(`💰 *TOTAL PROVISIONAL:* *${formatCurrency(orderSummary.subtotal)}* + Delivery`);
+          lines.push(
+            `💰 *TOTAL PROVISIONAL:* *${formatCurrency(orderSummary.subtotal)}* + Delivery`
+          );
           lines.push('');
           lines.push(`ℹ️ _${orderSummary.deliveryNoticeText}_`);
         }
@@ -106,11 +103,6 @@
       return lines.join('\n');
     },
 
-    /**
-     * Construye la URL oficial de WhatsApp Click to Chat codificando tildes, emojis y saltos de línea
-     * @param {Object} orderSummary
-     * @returns {string}
-     */
     buildOrderUrl(orderSummary) {
       const CONFIG = window.LaSarita.CONFIG;
       const messageText = this.buildMessageText(orderSummary);

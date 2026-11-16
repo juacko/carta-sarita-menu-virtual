@@ -1,8 +1,7 @@
 /**
- * Módulo de Modal de Producto, Variantes y Personalizaciones (FASE 4)
- * Gestiona la selección de acompañamientos, proteínas, tamaños, presentaciones,
- * sabores de alitas, promociones, restricciones de disponibilidad y observaciones,
- * validando las reglas comerciales antes de enviar al carrito.
+ * Módulo de Modal de Producto, Variantes y Personalizaciones (FASE 4 - Optimizado sin parpadeo)
+ * Actualiza opciones, topes de sabores y precios directamente en el DOM sin recrear el modal,
+ * eliminando por completo cualquier parpadeo o salto de scroll.
  */
 (function (window) {
   'use strict';
@@ -73,7 +72,7 @@
         this.selections.set(group.id, groupMap);
       });
 
-      this.render();
+      this.renderInitialModal();
       document.body.style.overflow = 'hidden';
     },
 
@@ -91,7 +90,7 @@
     calculateUnitPrice() {
       if (!this.currentItem) return 0;
 
-      let basePrice = Number(this.currentItem.basePrice) || 0;
+      const basePrice = Number(this.currentItem.basePrice) || 0;
       let deltaSum = 0;
       let hasOverridePrice = false;
       let overridePrice = basePrice;
@@ -129,6 +128,31 @@
         sum += qty;
       });
       return sum;
+    },
+
+    getGroupBadgeInfo(group) {
+      const selectedCount = this.getGroupSelectedCount(group.id);
+      const min = typeof group.min === 'number' ? group.min : group.required ? 1 : 0;
+      const max = typeof group.max === 'number' ? group.max : Infinity;
+      const isComplete =
+        selectedCount >= min && selectedCount <= max && (min > 0 || selectedCount > 0);
+
+      let ruleText = 'Opcional';
+      if (min === 1 && max === 1) {
+        ruleText = isComplete ? 'Listo ✓' : 'Obligatorio (Elige 1)';
+      } else if (min > 0 && min === max) {
+        ruleText = isComplete
+          ? `Listo (${selectedCount}/${max}) ✓`
+          : `Obligatorio (${selectedCount}/${max})`;
+      } else if (min > 0 && max < Infinity) {
+        ruleText = isComplete
+          ? `Seleccionado (${selectedCount}/${max}) ✓`
+          : `Elige de ${min} a ${max} (${selectedCount}/${max})`;
+      } else if (min === 0 && max < Infinity) {
+        ruleText = `Opcional (${selectedCount}/${max})`;
+      }
+
+      return { selectedCount, min, max, isComplete, ruleText };
     },
 
     validateSelections() {
@@ -197,7 +221,10 @@
       return list;
     },
 
-    render() {
+    /**
+     * Renderiza la estructura del modal UNA SOLA VEZ al abrirse
+     */
+    renderInitialModal() {
       const { escapeHtml, formatCurrency } = window.LaSarita.Utils;
       const MenuModule = window.LaSarita.MenuModule;
       const container = document.getElementById('product-modal-container');
@@ -268,11 +295,7 @@
                 >${escapeHtml(this.notes)}</textarea>
               </div>
 
-              ${
-                this.validationError
-                  ? `<div class="modal-validation-error" role="alert">${escapeHtml(this.validationError)}</div>`
-                  : ''
-              }
+              <div id="product-modal-error-box" class="modal-validation-error" role="alert" hidden></div>
             </div>
 
             <footer class="product-modal-footer">
@@ -299,7 +322,7 @@
 
               <button type="button" class="modal-submit-btn" id="product-modal-submit-btn">
                 <span>${submitLabel}</span>
-                <span>${formatCurrency(totalPrice)}</span>
+                <span id="product-modal-submit-price">${formatCurrency(totalPrice)}</span>
               </button>
             </footer>
           </div>
@@ -309,41 +332,110 @@
       this.bindModalEvents(container);
     },
 
-    renderVariantGroup(group) {
-      const { escapeHtml } = window.LaSarita.Utils;
-      const selectedCount = this.getGroupSelectedCount(group.id);
-      const min = typeof group.min === 'number' ? group.min : group.required ? 1 : 0;
-      const max = typeof group.max === 'number' ? group.max : Infinity;
-      const isComplete = selectedCount >= min && selectedCount <= max && (min > 0 || selectedCount > 0);
+    /**
+     * Actualiza en el DOM existente los estados de selección, badges, cantidad y precio
+     * SIN reconstruir el modal ni disparar animaciones (cero parpadeo).
+     */
+    updateModalUI() {
+      const { formatCurrency } = window.LaSarita.Utils;
+      const container = document.getElementById('product-modal-container');
+      if (!container || !this.currentItem) return;
 
-      let ruleText = 'Opcional';
-      if (min === 1 && max === 1) {
-        ruleText = isComplete ? 'Listo ✓' : 'Obligatorio (Elige 1)';
-      } else if (min > 0 && min === max) {
-        ruleText = isComplete ? `Listo (${selectedCount}/${max}) ✓` : `Obligatorio (${selectedCount}/${max})`;
-      } else if (min > 0 && max < Infinity) {
-        ruleText = isComplete
-          ? `Seleccionado (${selectedCount}/${max}) ✓`
-          : `Elige de ${min} a ${max} (${selectedCount}/${max})`;
-      } else if (min === 0 && max < Infinity) {
-        ruleText = `Opcional (${selectedCount}/${max})`;
+      const groups = Array.isArray(this.currentItem.variantGroups)
+        ? this.currentItem.variantGroups
+        : [];
+
+      groups.forEach(group => {
+        const badgeInfo = this.getGroupBadgeInfo(group);
+        const groupMap = this.selections.get(group.id) || new Map();
+
+        const fieldset = container.querySelector(
+          `.variant-group[data-group-id="${group.id}"]`
+        );
+        if (fieldset) {
+          fieldset.classList.remove('has-error');
+          const badgeEl = fieldset.querySelector('.variant-rule-badge');
+          if (badgeEl) {
+            badgeEl.textContent = badgeInfo.ruleText;
+            badgeEl.className = `variant-rule-badge ${
+              badgeInfo.isComplete ? 'is-complete' : badgeInfo.min > 0 ? 'is-required' : ''
+            }`;
+          }
+        }
+
+        const isMaxReached =
+          group.type === 'multiple' && badgeInfo.selectedCount >= badgeInfo.max;
+
+        group.options.forEach(option => {
+          const isSelected = (groupMap.get(option.id) || 0) > 0;
+          const isDisabled = !isSelected && isMaxReached;
+
+          const rowEl = container.querySelector(
+            `[data-option-row="${group.id}:${option.id}"]`
+          );
+          if (rowEl) {
+            rowEl.classList.toggle('is-selected', isSelected);
+            rowEl.classList.toggle('is-disabled', isDisabled);
+
+            const inputEl = rowEl.querySelector('input.variant-option-control');
+            if (inputEl) {
+              inputEl.checked = isSelected;
+              inputEl.disabled = isDisabled;
+            }
+          }
+        });
+      });
+
+      // Actualizar controles de cantidad
+      const qtyValEl = container.querySelector('#modal-qty-value');
+      const minusBtn = container.querySelector('#modal-qty-minus');
+      if (qtyValEl) qtyValEl.textContent = String(this.quantity);
+      if (minusBtn) minusBtn.disabled = this.quantity <= 1;
+
+      // Actualizar precio total en el botón de envío
+      const unitPrice = this.calculateUnitPrice();
+      const totalPrice = unitPrice * this.quantity;
+      const submitPriceEl = container.querySelector('#product-modal-submit-price');
+      if (submitPriceEl) {
+        submitPriceEl.textContent = formatCurrency(totalPrice);
       }
 
+      // Actualizar mensaje de error si existe
+      const errBox = container.querySelector('#product-modal-error-box');
+      if (errBox) {
+        if (this.validationError) {
+          errBox.textContent = this.validationError;
+          errBox.hidden = false;
+        } else {
+          errBox.textContent = '';
+          errBox.hidden = true;
+        }
+      }
+    },
+
+    renderVariantGroup(group) {
+      const { escapeHtml } = window.LaSarita.Utils;
+      const badgeInfo = this.getGroupBadgeInfo(group);
+
       const helperText =
-        group.type === 'multiple' && max > 1
-          ? `Puedes combinar hasta ${max} opciones disponibles.`
+        group.type === 'multiple' && badgeInfo.max > 1
+          ? `Puedes combinar hasta ${badgeInfo.max} opciones disponibles.`
           : '';
 
       const optionsHtml = group.options
-        .map(option => this.renderVariantOption(group, option, selectedCount, max))
+        .map(option =>
+          this.renderVariantOption(group, option, badgeInfo.selectedCount, badgeInfo.max)
+        )
         .join('');
 
       return `
         <fieldset class="variant-group" data-group-id="${escapeHtml(group.id)}">
           <div class="variant-group-header">
             <legend class="variant-group-title">${escapeHtml(group.name)}</legend>
-            <span class="variant-rule-badge ${isComplete ? 'is-complete' : min > 0 ? 'is-required' : ''}">
-              ${escapeHtml(ruleText)}
+            <span class="variant-rule-badge ${
+              badgeInfo.isComplete ? 'is-complete' : badgeInfo.min > 0 ? 'is-required' : ''
+            }">
+              ${escapeHtml(badgeInfo.ruleText)}
             </span>
           </div>
           ${helperText ? `<p class="variant-group-helper">${escapeHtml(helperText)}</p>` : ''}
@@ -431,7 +523,7 @@
         minusBtn.addEventListener('click', () => {
           if (this.quantity > 1) {
             this.quantity -= 1;
-            this.render();
+            this.updateModalUI();
           }
         });
       }
@@ -440,7 +532,7 @@
         plusBtn.addEventListener('click', () => {
           if (this.quantity < 50) {
             this.quantity += 1;
-            this.render();
+            this.updateModalUI();
           }
         });
       }
@@ -487,14 +579,14 @@
 
       this.selections.set(groupId, groupMap);
       this.validationError = null;
-      this.render();
+      this.updateModalUI();
     },
 
     handleSubmit() {
       const validation = this.validateSelections();
       if (!validation.valid) {
         this.validationError = validation.message;
-        this.render();
+        this.updateModalUI();
 
         if (validation.errorGroupId) {
           const errGroupEl = document.querySelector(

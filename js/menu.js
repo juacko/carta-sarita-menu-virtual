@@ -698,7 +698,20 @@
 
           const targetSection = document.getElementById(`sec-${categoryId}`);
           if (targetSection) {
-            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            this.isProgrammaticScroll = true;
+            clearTimeout(this.scrollLockTimer);
+            const headerOffset = 132;
+            const elementPosition = targetSection.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
+
+            this.scrollLockTimer = setTimeout(() => {
+              this.isProgrammaticScroll = false;
+            }, 650);
           }
         });
       }
@@ -769,7 +782,12 @@
         chip.setAttribute('aria-pressed', isMatch ? 'true' : 'false');
 
         if (isMatch && scrollChipIntoView) {
-          chip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+          const targetLeft =
+            chip.offsetLeft - navEl.clientWidth / 2 + chip.clientWidth / 2;
+          navEl.scrollTo({
+            left: Math.max(0, targetLeft),
+            behavior: 'smooth'
+          });
         }
       });
     },
@@ -784,6 +802,7 @@
 
       this.scrollObserver = new IntersectionObserver(
         entries => {
+          if (this.isProgrammaticScroll) return;
           const visibleEntry = entries.find(entry => entry.isIntersecting);
           if (visibleEntry) {
             const catId = visibleEntry.target.getAttribute('data-category-section');
@@ -791,7 +810,7 @@
           }
         },
         {
-          rootMargin: '-140px 0px -65% 0px',
+          rootMargin: '-136px 0px -68% 0px',
           threshold: 0
         }
       );

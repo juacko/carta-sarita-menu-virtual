@@ -1,6 +1,6 @@
 /**
- * Módulo de Modalidad de Pedido y Detección Automática de Mesa por QR (FASE 6)
- * Gestiona Consumo en Salón vs. Delivery, detecta ?mesa=XX en la URL,
+ * Módulo de Modalidad de Pedido y Detección Automática de Mesa por QR (FASE 6 + Modalidad Recoger/Llevar)
+ * Gestiona Consumo en Salón, Recoger (Para Llevar) y Delivery, detecta ?mesa=XX en la URL,
  * mantiene la mesa durante toda la navegación y evita modificaciones accidentales.
  */
 (function (window) {
@@ -48,9 +48,6 @@
       this.renderModeBar();
     },
 
-    /**
-     * Limpia el identificador de mesa para permitir solo caracteres seguros (ej. 01, 02, 12A)
-     */
     sanitizeTableCode(raw) {
       return String(raw).replace(/[^a-zA-Z0-9\-_]/g, '').slice(0, 10);
     },
@@ -90,7 +87,11 @@
       const CONFIG = window.LaSarita.CONFIG;
       try {
         const val = localStorage.getItem(CONFIG.storageKeys.orderType);
-        if (val === CONFIG.orderTypes.DINE_IN || val === CONFIG.orderTypes.DELIVERY) {
+        if (
+          val === CONFIG.orderTypes.DINE_IN ||
+          val === CONFIG.orderTypes.PICKUP ||
+          val === CONFIG.orderTypes.DELIVERY
+        ) {
           return val;
         }
         return null;
@@ -104,22 +105,33 @@
     },
 
     /**
-     * Cambia la modalidad activa (salon | delivery).
+     * Cambia la modalidad activa (salon | llevar | delivery).
      * Si hay una mesa detectada por QR, previene el cambio accidental.
      */
     setOrderType(newType, skipConfirm = false) {
       const CONFIG = window.LaSarita.CONFIG;
-      if (newType !== CONFIG.orderTypes.DINE_IN && newType !== CONFIG.orderTypes.DELIVERY) {
+      const validTypes = [
+        CONFIG.orderTypes.DINE_IN,
+        CONFIG.orderTypes.PICKUP,
+        CONFIG.orderTypes.DELIVERY
+      ];
+      if (!validTypes.includes(newType)) {
         return false;
+      }
+
+      if (this.currentType === newType) {
+        return true;
       }
 
       if (
         this.isTableLockedFromQr &&
-        newType === CONFIG.orderTypes.DELIVERY &&
+        newType !== CONFIG.orderTypes.DINE_IN &&
         !skipConfirm
       ) {
+        const targetLabel =
+          newType === CONFIG.orderTypes.PICKUP ? 'Recoger (Para Llevar)' : 'Delivery';
         const confirmed = window.confirm(
-          `Ingresaste desde el código QR de la Mesa ${this.tableNumber}. ¿Estás seguro de que deseas cambiar la modalidad a Delivery?`
+          `Ingresaste desde el código QR de la Mesa ${this.tableNumber}. ¿Estás seguro de que deseas cambiar la modalidad a ${targetLabel}?`
         );
         if (!confirmed) {
           return false;
@@ -143,12 +155,8 @@
       return true;
     },
 
-    /**
-     * Establece manualmente el número de mesa cuando el cliente NO entró con un QR de mesa fijo
-     */
     setManualTableNumber(value) {
       if (this.isTableLockedFromQr) {
-        // No permitir modificar accidentalmente la mesa identificada por QR
         return;
       }
       this.tableNumber = this.sanitizeTableCode(value);
@@ -170,7 +178,7 @@
     },
 
     /**
-     * Renderiza la barra de modalidad e indicador de mesa en la pantalla principal
+     * Renderiza la barra de modalidad (Salón / Recoger / Delivery) e indicador de mesa
      */
     renderModeBar() {
       const { escapeHtml } = window.LaSarita.Utils;
@@ -179,6 +187,7 @@
       if (!indicatorEl) return;
 
       const isSalon = this.currentType === CONFIG.orderTypes.DINE_IN;
+      const isPickup = this.currentType === CONFIG.orderTypes.PICKUP;
       const isDelivery = this.currentType === CONFIG.orderTypes.DELIVERY;
 
       const tableBadgeHtml =
@@ -207,6 +216,16 @@
 
         <button
           type="button"
+          class="mode-pill ${isPickup ? 'is-active' : ''}"
+          data-order-mode="${CONFIG.orderTypes.PICKUP}"
+          id="mode-btn-pickup"
+          aria-pressed="${isPickup ? 'true' : 'false'}"
+        >
+          <span>🛍️ Recoger (Llevar)</span>
+        </button>
+
+        <button
+          type="button"
           class="mode-pill ${isDelivery ? 'is-active' : ''}"
           data-order-mode="${CONFIG.orderTypes.DELIVERY}"
           id="mode-btn-delivery"
@@ -219,11 +238,18 @@
       `;
 
       const btnSalon = indicatorEl.querySelector('#mode-btn-salon');
+      const btnPickup = indicatorEl.querySelector('#mode-btn-pickup');
       const btnDelivery = indicatorEl.querySelector('#mode-btn-delivery');
 
       if (btnSalon) {
         btnSalon.addEventListener('click', () => {
           this.setOrderType(CONFIG.orderTypes.DINE_IN);
+        });
+      }
+
+      if (btnPickup) {
+        btnPickup.addEventListener('click', () => {
+          this.setOrderType(CONFIG.orderTypes.PICKUP);
         });
       }
 
