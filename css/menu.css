@@ -2,15 +2,73 @@
  * Estilos del Catálogo, Buscador, Categorías Desplazables y Tarjetas de Productos (FASE 3)
  */
 
-/* Buscador */
-.search-bar-container {
-  margin-bottom: 0.75rem;
+/* Barra Superior Compacta: Modalidad Activa + Buscador */
+.top-controls-section {
+  margin-top: 0.75rem;
+  margin-bottom: 0.55rem;
+}
+
+.top-controls-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+@media (min-width: 640px) {
+  .top-controls-row {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.compact-mode-wrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.active-mode-pill-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding: 0.58rem 0.95rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-surface);
+  border: 1.5px solid var(--color-border-strong);
+  color: var(--color-text);
+  font-size: 0.85rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-xs);
+  transition: border-color var(--transition-fast), background-color var(--transition-fast);
+}
+
+.active-mode-pill-btn:hover {
+  border-color: var(--color-brand-pink);
+  background-color: #fff9fb;
+}
+
+.active-mode-pill-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.active-mode-pill-tag {
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--color-brand-pink);
+  background-color: #fde8f1;
+  padding: 0.16rem 0.55rem;
+  border-radius: var(--radius-full);
 }
 
 .search-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
+  flex: 1;
 }
 
 .search-icon {

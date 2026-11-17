@@ -1,16 +1,19 @@
 /**
- * Módulo de Modalidad de Pedido y Detección Automática de Mesa por QR (FASE 6 + Modalidad Recoger/Llevar)
- * Gestiona Consumo en Salón, Recoger (Para Llevar) y Delivery, detecta ?mesa=XX en la URL,
- * mantiene la mesa durante toda la navegación y evita modificaciones accidentales.
+ * Módulo de Modalidad de Pedido, Modal de Bienvenida y Detección de Mesa por QR
+ * Muestra un modal de bienvenida inicial limpio para elegir entre Consumo en Salón,
+ * Recoger (Para Llevar) y Delivery, liberando el espacio superior de la carta.
  */
 (function (window) {
   'use strict';
+
+  const WELCOME_SESSION_KEY = 'lasarita_welcome_shown_v1';
 
   const OrderTypeModule = {
     currentType: 'salon',
     tableNumber: '',
     needsStaffAssistanceForTable: false,
     isTableLockedFromQr: false,
+    isWelcomeOpen: false,
 
     init() {
       const CONFIG = window.LaSarita.CONFIG;
@@ -29,14 +32,12 @@
           this.saveOrderType(this.currentType);
         }
       } else {
-        // 2. Si no viene en la URL actual, revisar si ya se había detectado un QR de mesa en esta sesión de navegación
         const sessionTableData = this.loadSessionTable();
         if (sessionTableData && sessionTableData.tableNumber && sessionTableData.locked) {
           this.tableNumber = sessionTableData.tableNumber;
           this.isTableLockedFromQr = true;
           this.currentType = CONFIG.orderTypes.DINE_IN;
         } else {
-          // 3. Cargar última modalidad seleccionada (Salón por defecto)
           const savedType = this.loadSavedOrderType();
           this.currentType = savedType || CONFIG.orderTypes.DINE_IN;
           if (sessionTableData && sessionTableData.tableNumber) {
@@ -46,6 +47,33 @@
       }
 
       this.renderModeBar();
+
+      // Mostrar modal de bienvenida al inicio de la sesión
+      if (!this.wasWelcomeShownInSession()) {
+        this.openWelcomeModal();
+      }
+
+      document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && this.isWelcomeOpen) {
+          this.closeWelcomeModal();
+        }
+      });
+    },
+
+    wasWelcomeShownInSession() {
+      try {
+        return sessionStorage.getItem(WELCOME_SESSION_KEY) === '1';
+      } catch (e) {
+        return false;
+      }
+    },
+
+    markWelcomeShown() {
+      try {
+        sessionStorage.setItem(WELCOME_SESSION_KEY, '1');
+      } catch (e) {
+        // Ignorar si sessionStorage está restringido
+      }
     },
 
     sanitizeTableCode(raw) {
@@ -60,7 +88,7 @@
           JSON.stringify({ tableNumber: tableNum, locked: Boolean(locked) })
         );
       } catch (e) {
-        // Ignorar si sessionStorage no está disponible
+        // Ignorar
       }
     },
 
@@ -79,7 +107,7 @@
       try {
         localStorage.setItem(CONFIG.storageKeys.orderType, type);
       } catch (e) {
-        // Ignorar errores de almacenamiento
+        // Ignorar
       }
     },
 
@@ -104,10 +132,6 @@
       return this.currentType;
     },
 
-    /**
-     * Cambia la modalidad activa (salon | llevar | delivery).
-     * Si hay una mesa detectada por QR, previene el cambio accidental.
-     */
     setOrderType(newType, skipConfirm = false) {
       const CONFIG = window.LaSarita.CONFIG;
       const validTypes = [
@@ -117,10 +141,6 @@
       ];
       if (!validTypes.includes(newType)) {
         return false;
-      }
-
-      if (this.currentType === newType) {
-        return true;
       }
 
       if (
@@ -160,25 +180,12 @@
         return;
       }
       this.tableNumber = this.sanitizeTableCode(value);
-      if (this.tableNumber) {
-        this.needsStaffAssistanceForTable = false;
-      }
       this.saveSessionTable(this.tableNumber, false);
       this.renderModeBar();
     },
 
-    setStaffAssistanceForTable(needsAssistance) {
-      if (this.isTableLockedFromQr) return;
-      this.needsStaffAssistanceForTable = Boolean(needsAssistance);
-      if (this.needsStaffAssistanceForTable) {
-        this.tableNumber = '';
-        this.saveSessionTable('', false);
-      }
-      this.renderModeBar();
-    },
-
     /**
-     * Renderiza la barra de modalidad (Salón / Recoger / Delivery) e indicador de mesa
+     * Renderiza la píldora compacta junto al buscador (sin ocupar espacio con un banner fijo)
      */
     renderModeBar() {
       const { escapeHtml } = window.LaSarita.Utils;
@@ -188,75 +195,165 @@
 
       const isSalon = this.currentType === CONFIG.orderTypes.DINE_IN;
       const isPickup = this.currentType === CONFIG.orderTypes.PICKUP;
-      const isDelivery = this.currentType === CONFIG.orderTypes.DELIVERY;
 
-      const tableBadgeHtml =
-        isSalon && this.tableNumber
-          ? `
-            <span class="table-detected-badge" title="${
-              this.isTableLockedFromQr
-                ? 'Mesa identificada automáticamente por código QR'
-                : 'Mesa seleccionada'
-            }">
-              ${this.isTableLockedFromQr ? '🔒' : '📍'} Mesa ${escapeHtml(this.tableNumber)}
-            </span>
-          `
-          : '';
+      let icon = '🛵';
+      let modeText = 'Delivery';
+      if (isSalon) {
+        icon = '🍽️';
+        modeText = this.tableNumber
+          ? `En Salón • Mesa ${escapeHtml(this.tableNumber)}`
+          : 'Consumo en Salón';
+      } else if (isPickup) {
+        icon = '🛍️';
+        modeText = 'Recoger (Para Llevar)';
+      }
 
       indicatorEl.innerHTML = `
         <button
           type="button"
-          class="mode-pill ${isSalon ? 'is-active' : ''}"
-          data-order-mode="${CONFIG.orderTypes.DINE_IN}"
-          id="mode-btn-salon"
-          aria-pressed="${isSalon ? 'true' : 'false'}"
+          class="active-mode-pill-btn"
+          id="active-mode-trigger-btn"
+          title="Cambiar modalidad de pedido"
         >
-          <span>🍽️ Consumo en Salón</span>
+          <span class="active-mode-pill-left">
+            <span aria-hidden="true">${icon}</span>
+            <span>${modeText}</span>
+          </span>
+          <span class="active-mode-pill-tag">Cambiar ▾</span>
         </button>
-
-        <button
-          type="button"
-          class="mode-pill ${isPickup ? 'is-active' : ''}"
-          data-order-mode="${CONFIG.orderTypes.PICKUP}"
-          id="mode-btn-pickup"
-          aria-pressed="${isPickup ? 'true' : 'false'}"
-        >
-          <span>🛍️ Recoger (Llevar)</span>
-        </button>
-
-        <button
-          type="button"
-          class="mode-pill ${isDelivery ? 'is-active' : ''}"
-          data-order-mode="${CONFIG.orderTypes.DELIVERY}"
-          id="mode-btn-delivery"
-          aria-pressed="${isDelivery ? 'true' : 'false'}"
-        >
-          <span>🛵 Delivery</span>
-        </button>
-
-        ${tableBadgeHtml}
       `;
 
-      const btnSalon = indicatorEl.querySelector('#mode-btn-salon');
-      const btnPickup = indicatorEl.querySelector('#mode-btn-pickup');
-      const btnDelivery = indicatorEl.querySelector('#mode-btn-delivery');
+      const triggerBtn = indicatorEl.querySelector('#active-mode-trigger-btn');
+      if (triggerBtn) {
+        triggerBtn.addEventListener('click', () => this.openWelcomeModal());
+      }
+    },
 
-      if (btnSalon) {
-        btnSalon.addEventListener('click', () => {
-          this.setOrderType(CONFIG.orderTypes.DINE_IN);
+    /**
+     * Abre el modal de bienvenida y selección de modalidad
+     */
+    openWelcomeModal() {
+      const { escapeHtml } = window.LaSarita.Utils;
+      const CONFIG = window.LaSarita.CONFIG;
+      const container = document.getElementById('welcome-modal-container');
+      if (!container) return;
+
+      this.isWelcomeOpen = true;
+      const isSalon = this.currentType === CONFIG.orderTypes.DINE_IN;
+      const isPickup = this.currentType === CONFIG.orderTypes.PICKUP;
+      const isDelivery = this.currentType === CONFIG.orderTypes.DELIVERY;
+
+      const salonDesc =
+        this.isTableLockedFromQr && this.tableNumber
+          ? `Mesa ${escapeHtml(this.tableNumber)} identificada por QR`
+          : 'Para disfrutar aquí en nuestras mesas';
+
+      container.innerHTML = `
+        <div class="welcome-modal-backdrop" id="welcome-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="welcome-dialog-title">
+          <div class="welcome-modal-sheet">
+            <button
+              type="button"
+              class="modal-close-btn welcome-modal-close"
+              id="welcome-modal-close-btn"
+              aria-label="Cerrar bienvenida"
+            >
+              ✕
+            </button>
+
+            <div class="welcome-brand-badge">
+              <span class="welcome-brand-title" id="welcome-dialog-title">La Sarita</span>
+              <span class="welcome-brand-sub">Cocina Popular</span>
+            </div>
+
+            <p class="welcome-story-text">
+              En honor a Sarita Colonia, hemos creado esta carta con mucha calle y sabor peruano.
+            </p>
+
+            <h3 class="welcome-prompt-title">¿Cómo deseas realizar tu pedido hoy?</h3>
+
+            <div class="welcome-mode-cards">
+              <button
+                type="button"
+                class="welcome-mode-card ${isSalon ? 'is-active' : ''}"
+                data-welcome-mode="${CONFIG.orderTypes.DINE_IN}"
+              >
+                <div class="welcome-mode-card-left">
+                  <span class="welcome-mode-icon" aria-hidden="true">🍽️</span>
+                  <div class="welcome-mode-info">
+                    <span class="welcome-mode-name">Consumo en Salón</span>
+                    <span class="welcome-mode-desc">${salonDesc}</span>
+                  </div>
+                </div>
+                <span class="welcome-mode-arrow" aria-hidden="true">→</span>
+              </button>
+
+              <button
+                type="button"
+                class="welcome-mode-card ${isPickup ? 'is-active' : ''}"
+                data-welcome-mode="${CONFIG.orderTypes.PICKUP}"
+              >
+                <div class="welcome-mode-card-left">
+                  <span class="welcome-mode-icon" aria-hidden="true">🛍️</span>
+                  <div class="welcome-mode-info">
+                    <span class="welcome-mode-name">Recoger (Para Llevar)</span>
+                    <span class="welcome-mode-desc">Pide rápido y pasa a recogerlo al local</span>
+                  </div>
+                </div>
+                <span class="welcome-mode-arrow" aria-hidden="true">→</span>
+              </button>
+
+              <button
+                type="button"
+                class="welcome-mode-card ${isDelivery ? 'is-active' : ''}"
+                data-welcome-mode="${CONFIG.orderTypes.DELIVERY}"
+              >
+                <div class="welcome-mode-card-left">
+                  <span class="welcome-mode-icon" aria-hidden="true">🛵</span>
+                  <div class="welcome-mode-info">
+                    <span class="welcome-mode-name">Delivery</span>
+                    <span class="welcome-mode-desc">Te lo llevamos hasta tu dirección</span>
+                  </div>
+                </div>
+                <span class="welcome-mode-arrow" aria-hidden="true">→</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      const backdrop = container.querySelector('#welcome-modal-backdrop');
+      const closeBtn = container.querySelector('#welcome-modal-close-btn');
+      const modeCards = container.querySelectorAll('[data-welcome-mode]');
+
+      if (backdrop) {
+        backdrop.addEventListener('click', e => {
+          if (e.target === backdrop) {
+            this.closeWelcomeModal();
+          }
         });
       }
 
-      if (btnPickup) {
-        btnPickup.addEventListener('click', () => {
-          this.setOrderType(CONFIG.orderTypes.PICKUP);
-        });
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => this.closeWelcomeModal());
       }
 
-      if (btnDelivery) {
-        btnDelivery.addEventListener('click', () => {
-          this.setOrderType(CONFIG.orderTypes.DELIVERY);
+      modeCards.forEach(card => {
+        card.addEventListener('click', () => {
+          const chosenMode = card.getAttribute('data-welcome-mode');
+          const changed = this.setOrderType(chosenMode);
+          if (changed) {
+            this.closeWelcomeModal();
+          }
         });
+      });
+    },
+
+    closeWelcomeModal() {
+      this.isWelcomeOpen = false;
+      this.markWelcomeShown();
+      const container = document.getElementById('welcome-modal-container');
+      if (container) {
+        container.innerHTML = '';
       }
     }
   };

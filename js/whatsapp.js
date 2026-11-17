@@ -1,7 +1,7 @@
 /**
- * Módulo de Integración con WhatsApp Click to Chat (FASE 7 + Modalidad Recoger/Llevar)
+ * Módulo de Integración con WhatsApp Click to Chat
  * Genera un mensaje estructurado, legible y codificado con encodeURIComponent
- * hacia el número comercial oficial +51 987090720 (https://wa.me/51987090720?text=...).
+ * omitiendo limpiamente los campos opcionales que el cliente deje en blanco.
  */
 (function (window) {
   'use strict';
@@ -29,8 +29,8 @@
         if (orderSummary.tableNumber) {
           const qrTag = orderSummary.isTableLockedFromQr ? ' (Identificada por QR)' : '';
           lines.push(`📍 *Mesa N°:* ${orderSummary.tableNumber}${qrTag}`);
-        } else if (orderSummary.needsStaffAssistanceForTable) {
-          lines.push('📍 *Mesa:* Por asignar (Solicita asistencia del personal)');
+        } else {
+          lines.push('📍 *Mesa:* Por confirmar en salón');
         }
       } else if (orderSummary.isPickup) {
         lines.push('🛍️ *Modalidad:* PARA LLEVAR (RECOGER EN LOCAL)');
@@ -38,21 +38,32 @@
         lines.push('🛵 *Modalidad:* DELIVERY');
       }
 
-      lines.push('');
-
-      // 4. Nombre del cliente, 5. Teléfono, y 6. Dirección y referencia cuando sea delivery
-      lines.push('*DATOS DEL CLIENTE:*');
-      lines.push(`👤 *Nombre:* ${orderSummary.customer.name}`);
-      lines.push(`📞 *Teléfono:* ${orderSummary.customer.phone}`);
-
+      // 4. Datos del cliente (solo imprime los campos que tengan información)
+      const customerLines = [];
+      if (orderSummary.customer.name) {
+        customerLines.push(`👤 *Nombre:* ${orderSummary.customer.name}`);
+      }
+      if (orderSummary.customer.phone) {
+        customerLines.push(`📞 *Teléfono:* ${orderSummary.customer.phone}`);
+      }
       if (orderSummary.isDelivery) {
-        lines.push(`🏠 *Dirección de entrega:* ${orderSummary.customer.address}`);
-        lines.push(`🧭 *Referencia:* ${orderSummary.customer.reference}`);
+        if (orderSummary.customer.address) {
+          customerLines.push(`🏠 *Dirección de entrega:* ${orderSummary.customer.address}`);
+        }
+        if (orderSummary.customer.reference) {
+          customerLines.push(`🧭 *Referencia:* ${orderSummary.customer.reference}`);
+        }
+      }
+
+      if (customerLines.length > 0) {
+        lines.push('');
+        lines.push('*DATOS DEL CLIENTE:*');
+        customerLines.forEach(l => lines.push(l));
       }
 
       lines.push('--------------------------------');
 
-      // 7. Productos, variantes, presentaciones, cantidades, observaciones, precio unitario y subtotales
+      // 5. Productos, variantes, presentaciones, cantidades, observaciones, precio unitario y subtotales
       lines.push('*DETALLE DEL PEDIDO:*');
 
       orderSummary.items.forEach((item, index) => {
@@ -79,7 +90,7 @@
       lines.push('');
       lines.push('--------------------------------');
 
-      // 14. Total de productos y 15. Información del costo de delivery si está pendiente
+      // 6. Total de productos e información de delivery
       lines.push(
         `🧾 *Total de productos (${orderSummary.totalCount} unid.):* ${formatCurrency(orderSummary.subtotal)}`
       );

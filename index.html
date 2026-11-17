@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Carta Virtual de La Sarita – Cocina Popular. Con mucha calle y sabor peruano. Pide para consumo en salón o delivery directamente por WhatsApp." />
+  <meta name="description" content="Carta Virtual de La Sarita – Cocina Popular. Con mucha calle y sabor peruano. Pide para consumo en salón, para llevar o delivery directamente por WhatsApp." />
   <meta name="theme-color" content="#9e2b25" />
   <title>La Sarita – Cocina Popular | Carta Virtual</title>
 
@@ -57,51 +57,35 @@
     </div>
   </header>
 
-  <!-- Contenido Principal -->
+  <!-- Contenido Principal Limpio y Directo al Pedido -->
   <main class="main-content no-print" id="top">
     <div class="container">
-      <!-- Banner de Bienvenida e Identidad + Selector Rápido de Modalidad -->
-      <section class="hero-banner" aria-label="Presentación de La Sarita">
-        <div class="hero-banner-content">
-          <p class="hero-story">
-            <strong>La Sarita - Cocina Popular</strong>, en honor a Sarita Colonia, hemos creado esta carta con mucha calle y sabor peruano. ¡Gracias por ser parte de esta historia!
-          </p>
-          <div class="hero-meta-bar" id="order-mode-bar">
-            <div class="order-mode-Status" id="order-mode-indicator">
-              <button type="button" class="mode-pill is-active" data-order-mode="salon" id="mode-btn-salon">
-                <span>🍽️ Consumo en Salón</span>
-              </button>
-              <button type="button" class="mode-pill" data-order-mode="llevar" id="mode-btn-pickup">
-                <span>🛍️ Recoger (Llevar)</span>
-              </button>
-              <button type="button" class="mode-pill" data-order-mode="delivery" id="mode-btn-delivery">
-                <span>🛵 Delivery</span>
-              </button>
-            </div>
+      <!-- Barra Compacta: Píldora de Modalidad Activa + Buscador -->
+      <section class="top-controls-section" id="controls-section" aria-label="Modalidad de pedido y buscador">
+        <div class="top-controls-row">
+          <div id="order-mode-indicator" class="compact-mode-wrap">
+            <!-- Renderizado dinámicamente por order-type.js -->
           </div>
-        </div>
-      </section>
 
-      <!-- Barra de Búsqueda -->
-      <section class="search-bar-container" id="controls-section" aria-label="Buscar en la carta">
-        <div class="search-input-wrapper">
-          <span class="search-icon" aria-hidden="true">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </span>
-          <label for="catalog-search-input" class="sr-only">Buscar plato, bebida o ingrediente</label>
-          <input
-            type="search"
-            id="catalog-search-input"
-            class="search-input"
-            placeholder="Buscar plato, alitas, lomo, pizza, bebida..."
-            autocomplete="off"
-          />
-          <button type="button" id="catalog-search-clear" class="search-clear-btn" aria-label="Limpiar búsqueda" hidden>
-            ✕
-          </button>
+          <div class="search-input-wrapper">
+            <span class="search-icon" aria-hidden="true">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </span>
+            <label for="catalog-search-input" class="sr-only">Buscar plato, bebida o ingrediente</label>
+            <input
+              type="search"
+              id="catalog-search-input"
+              class="search-input"
+              placeholder="Buscar plato, alitas, lomo, pizza, bebida..."
+              autocomplete="off"
+            />
+            <button type="button" id="catalog-search-clear" class="search-clear-btn" aria-label="Limpiar búsqueda" hidden>
+              ✕
+            </button>
+          </div>
         </div>
         <div id="search-feedback" class="search-feedback" aria-live="polite" hidden></div>
       </section>
@@ -119,6 +103,9 @@
       </div>
     </div>
   </main>
+
+  <!-- Modal de Bienvenida y Selección de Modalidad (Salón / Recoger / Delivery) -->
+  <div id="welcome-modal-container" class="no-print" aria-live="polite"></div>
 
   <!-- Modal de Personalización de Producto (FASE 4) -->
   <div id="product-modal-container" class="no-print" aria-live="polite"></div>
@@ -163,7 +150,7 @@
     </div>
   </footer>
 
-  <!-- Módulos JS (compatibles tanto en Cloudflare Pages/HTTP como al abrir index.html localmente) -->
+  <!-- Módulos JS -->
   <script defer src="./js/config.js"></script>
   <script defer src="./js/utils.js"></script>
   <script defer src="./js/menu.js"></script>

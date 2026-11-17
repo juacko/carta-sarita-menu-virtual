@@ -1,8 +1,7 @@
 /**
- * Módulo de Checkout (FASE 6 + Modalidad Recoger / Para Llevar)
- * Implementa los 7 pasos del checkout, validación por modalidad (Salón / Recoger / Delivery),
- * bloqueo de mesa detectada por QR, costo de delivery pendiente de confirmación
- * y protección de datos personales (sin guardar teléfonos ni direcciones en localStorage).
+ * Módulo de Checkout (Pedido Rápido sin Fricción)
+ * En Consumo en Salón y Recoger (Llevar), los campos de Nombre, Teléfono y Mesa
+ * son opcionales para permitir enviar el pedido a WhatsApp en un solo toque.
  */
 (function (window) {
   'use strict';
@@ -76,45 +75,33 @@
     },
 
     /**
-     * Valida los campos obligatorios según la modalidad seleccionada (Salón / Recoger / Delivery)
+     * Valida los campos según modalidad:
+     * - En Salón y Recoger (Llevar): Nombre, Teléfono y Mesa son opcionales.
+     * - En Delivery: Dirección y Referencia son obligatorias.
      */
     validateForm() {
       const CONFIG = window.LaSarita.CONFIG;
       const OrderTypeModule = window.LaSarita.OrderTypeModule;
       const currentType = OrderTypeModule.getOrderType();
-      const isSalon = currentType === CONFIG.orderTypes.DINE_IN;
       const isDelivery = currentType === CONFIG.orderTypes.DELIVERY;
 
       const errors = {};
-      const nameClean = (this.customerData.name || '').trim();
       const phoneClean = (this.customerData.phone || '').trim();
       const phoneDigits = phoneClean.replace(/\D/g, '');
 
-      if (nameClean.length < 2) {
-        errors.name = isSalon
-          ? 'Ingresa tu nombre.'
-          : 'Ingresa tu nombre completo.';
+      // Si el cliente escribió un teléfono opcionalmente, validar que tenga al menos 6 dígitos
+      if (phoneClean.length > 0 && (phoneDigits.length < 6 || phoneDigits.length > 15)) {
+        errors.phone = 'Ingresa un número de teléfono válido o déjalo en blanco.';
       }
 
-      if (phoneDigits.length < 7 || phoneDigits.length > 15) {
-        errors.phone = 'Ingresa un número de teléfono válido.';
-      }
-
-      if (isSalon) {
-        const hasTable = Boolean((OrderTypeModule.tableNumber || '').trim());
-        const needsAssist = Boolean(OrderTypeModule.needsStaffAssistanceForTable);
-        if (!OrderTypeModule.isTableLockedFromQr && !hasTable && !needsAssist) {
-          errors.table =
-            'Indica tu número de mesa o marca que solicitarás asistencia al personal.';
-        }
-      } else if (isDelivery) {
+      if (isDelivery) {
         const addressClean = (this.customerData.address || '').trim();
         const refClean = (this.customerData.reference || '').trim();
 
-        if (addressClean.length < 5) {
+        if (addressClean.length < 4) {
           errors.address = 'Ingresa la dirección de entrega.';
         }
-        if (refClean.length < 3) {
+        if (refClean.length < 2) {
           errors.reference = 'Ingresa una referencia de ubicación.';
         }
       }
@@ -123,9 +110,6 @@
       return Object.keys(errors).length === 0;
     },
 
-    /**
-     * Construye el objeto estructurado del pedido para WhatsAppModule
-     */
     buildOrderSummary() {
       const CONFIG = window.LaSarita.CONFIG;
       const OrderTypeModule = window.LaSarita.OrderTypeModule;
@@ -146,11 +130,8 @@
         isSalon,
         isPickup,
         isDelivery,
-        tableNumber: isSalon ? OrderTypeModule.tableNumber || null : null,
+        tableNumber: isSalon ? (OrderTypeModule.tableNumber || '').trim() || null : null,
         isTableLockedFromQr: Boolean(OrderTypeModule.isTableLockedFromQr),
-        needsStaffAssistanceForTable: isSalon
-          ? Boolean(OrderTypeModule.needsStaffAssistanceForTable)
-          : false,
         customer: {
           name: (this.customerData.name || '').trim(),
           phone: (this.customerData.phone || '').trim(),
@@ -173,9 +154,6 @@
       };
     },
 
-    /**
-     * Renderiza el modal de Checkout con las 3 modalidades: Salón, Recoger (Llevar) y Delivery
-     */
     render() {
       const { escapeHtml, formatCurrency } = window.LaSarita.Utils;
       const CONFIG = window.LaSarita.CONFIG;
@@ -193,7 +171,6 @@
       const items = CartModule.getItems();
       const subtotal = CartModule.getSubtotal();
 
-      // Bloque de mesa en Consumo en Salón o aviso de Recoger en tienda
       let modeContextHtml = '';
       if (isSalon) {
         if (OrderTypeModule.isTableLockedFromQr && OrderTypeModule.tableNumber) {
@@ -208,32 +185,18 @@
           `;
         } else {
           modeContextHtml = `
-            <div class="form-field ${this.errors.table ? 'has-error' : ''}">
+            <div class="form-field">
               <label for="checkout-table-input" class="form-label">
-                Número de mesa <span class="req">*</span>
+                Número de mesa <span class="variant-option-sublabel" style="display:inline">(opcional)</span>
               </label>
               <input
                 type="text"
                 id="checkout-table-input"
                 class="form-input"
                 maxlength="10"
-                placeholder="Ej. 01, 02, 05..."
+                placeholder="Ej. 01, 02... (o déjalo en blanco)"
                 value="${escapeHtml(OrderTypeModule.tableNumber || '')}"
-                ${OrderTypeModule.needsStaffAssistanceForTable ? 'disabled' : ''}
               />
-              <label class="table-assistance-checkbox-row">
-                <input
-                  type="checkbox"
-                  id="checkout-table-assist-chk"
-                  ${OrderTypeModule.needsStaffAssistanceForTable ? 'checked' : ''}
-                />
-                <span>Aún no tengo número de mesa / Solicitar asistencia al personal</span>
-              </label>
-              ${
-                this.errors.table
-                  ? `<span class="field-error-msg">${escapeHtml(this.errors.table)}</span>`
-                  : ''
-              }
             </div>
           `;
         }
@@ -241,14 +204,13 @@
         modeContextHtml = `
           <div class="table-qr-locked-box" role="status">
             <div>
-              <strong>🛍️ Pedido para Recoger (Llevar)</strong>
-              <div>Prepararemos tu pedido empaquetado para que pases a recogerlo en el local.</div>
+              <strong>🛍️ Pedido para Recoger (Para Llevar)</strong>
+              <div>Puedes enviar tu pedido directamente o indicar tu nombre opcionalmente.</div>
             </div>
           </div>
         `;
       }
 
-      // Campos exclusivos de Delivery (solo cuando es Delivery)
       const deliveryFieldsHtml = isDelivery
         ? `
           <div class="form-field ${this.errors.address ? 'has-error' : ''}">
@@ -291,7 +253,6 @@
         `
         : '';
 
-      // Resumen de productos (Paso 3)
       const itemsReviewHtml = items
         .map(item => {
           const groupedVariants = CartModule.formatGroupedVariants(item.selectedOptions);
@@ -320,7 +281,6 @@
         })
         .join('');
 
-      // Información de Delivery y Total (Pasos 4, 5 y 6)
       const deliveryNoticeHtml = isDelivery
         ? `
           <div class="delivery-pending-notice" role="note">
@@ -339,7 +299,7 @@
               <span>Consumo en Salón ${
                 OrderTypeModule.tableNumber
                   ? `(Mesa ${escapeHtml(OrderTypeModule.tableNumber)})`
-                  : '(Mesa por asignar)'
+                  : ''
               }</span>
             </div>
             <div class="checkout-total-line">
@@ -393,9 +353,9 @@
       }
 
       const step2Title = isSalon
-        ? 'Datos para atención en salón'
+        ? 'Datos de mesa / cliente (opcional)'
         : isPickup
-        ? 'Datos para recoger tu pedido'
+        ? 'Datos para recoger (opcional)'
         : 'Datos para entrega por Delivery';
 
       const postSendBoxHtml = this.hasOpenedWhatsApp
@@ -432,7 +392,7 @@
               <div class="checkout-step-header">
                 <h3 class="checkout-step-title">
                   <span class="checkout-step-number">1</span>
-                  <span>Confirmar modalidad de pedido</span>
+                  <span>Modalidad de pedido</span>
                 </h3>
               </div>
 
@@ -478,9 +438,11 @@
               <div class="checkout-form-grid">
                 ${modeContextHtml}
 
+                ${deliveryFieldsHtml}
+
                 <div class="form-field ${this.errors.name ? 'has-error' : ''}">
                   <label for="checkout-name-input" class="form-label">
-                    ${isSalon ? 'Nombre del cliente' : 'Nombre completo'} <span class="req">*</span>
+                    Nombre <span class="variant-option-sublabel" style="display:inline">(opcional)</span>
                   </label>
                   <input
                     type="text"
@@ -490,16 +452,11 @@
                     placeholder="Ej. María Gómez"
                     value="${escapeHtml(this.customerData.name)}"
                   />
-                  ${
-                    this.errors.name
-                      ? `<span class="field-error-msg">${escapeHtml(this.errors.name)}</span>`
-                      : ''
-                  }
                 </div>
 
                 <div class="form-field ${this.errors.phone ? 'has-error' : ''}">
                   <label for="checkout-phone-input" class="form-label">
-                    Teléfono / Celular <span class="req">*</span>
+                    Teléfono / Celular <span class="variant-option-sublabel" style="display:inline">(opcional)</span>
                   </label>
                   <input
                     type="tel"
@@ -515,8 +472,6 @@
                       : ''
                   }
                 </div>
-
-                ${deliveryFieldsHtml}
               </div>
             </section>
 
@@ -537,7 +492,7 @@
               </ul>
             </section>
 
-            <!-- PASOS 4, 5 y 6: Subtotal, Delivery y Total -->
+            <!-- PASO 4: Subtotal, Delivery y Total -->
             <section class="checkout-step-card" aria-label="Paso 4: Totales del pedido">
               <div class="checkout-step-header">
                 <h3 class="checkout-step-title">
@@ -553,7 +508,6 @@
             ${postSendBoxHtml}
           </div>
 
-          <!-- PASO 7: Confirmar intención de enviar por WhatsApp -->
           <footer class="checkout-footer">
             <button type="button" class="btn-whatsapp-submit" id="checkout-send-whatsapp-btn">
               <span>💬 Enviar pedido por WhatsApp</span>
@@ -608,15 +562,10 @@
       const addressInput = modalEl.querySelector('#checkout-address-input');
       const referenceInput = modalEl.querySelector('#checkout-reference-input');
       const tableInput = modalEl.querySelector('#checkout-table-input');
-      const tableAssistChk = modalEl.querySelector('#checkout-table-assist-chk');
 
       if (nameInput) {
         nameInput.addEventListener('input', e => {
           this.customerData.name = e.target.value;
-          if (this.errors.name) {
-            delete this.errors.name;
-            e.target.closest('.form-field')?.classList.remove('has-error');
-          }
         });
       }
 
@@ -653,18 +602,6 @@
       if (tableInput) {
         tableInput.addEventListener('input', e => {
           OrderTypeModule.setManualTableNumber(e.target.value);
-          if (this.errors.table) {
-            delete this.errors.table;
-            e.target.closest('.form-field')?.classList.remove('has-error');
-          }
-        });
-      }
-
-      if (tableAssistChk) {
-        tableAssistChk.addEventListener('change', e => {
-          OrderTypeModule.setStaffAssistanceForTable(e.target.checked);
-          delete this.errors.table;
-          this.render();
         });
       }
 
