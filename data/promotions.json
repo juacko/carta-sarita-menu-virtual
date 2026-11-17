@@ -12,7 +12,7 @@
       "description": "Elige 2 pizzas entre Americana y Peperoni por S/ 60.00.",
       "basePrice": 60.00,
       "badge": "Promo 2x60",
-      "image": "assets/products/promo-pizzas-2x60.webp",
+      "image": "assets/products/promo-pizzas-2x60.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -50,7 +50,7 @@
       "description": "Elige 2 pizzas entre Hawaiana, Al Tocino, Al Pollo y Suprema Especial por S/ 70.00.",
       "basePrice": 70.00,
       "badge": "Promo 2x70",
-      "image": "assets/products/promo-pizzas-2x70.webp",
+      "image": "assets/products/promo-pizzas-2x70.jpg",
       "available": true,
       "variantGroups": [
         {

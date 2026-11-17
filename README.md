@@ -130,3 +130,112 @@ Una vez publicada la carta en su dominio definitivo:
   }
   ```
 - **Integración con RESTOPOS:** Todos los productos (`data/products.json`), categorías (`data/categories.json`) y promociones (`data/promotions.json`) cuentan con identificadores estables (`id`, `sku`, `categoryId`) y grupos de variantes desacoplados listos para sincronizarse con una futura API de RESTOPOS.
+
+
+---
+
+## 7. Procedimiento Paso a Paso para Reemplazar las Imágenes de Referencia por tus Fotos Reales
+
+Actualmente la carpeta [`assets/products/`](file:///c:/Users/juack/Documents/code/carta%20virtual/assets/products) contiene las **78 imágenes de referencia** individuales (una para cada plato, bebida y promoción de la carta). Cada imagen de referencia tiene impreso en su parte inferior el nombre exacto de su archivo (por ejemplo: `lomo-saltado.jpg`).
+
+### Cómo cambiar las fotos tú mismo (3 pasos muy simples):
+
+1. **Prepara tu foto real:**
+   - Toma o selecciona la foto real de tu plato (se recomienda formato cuadrado `1:1`, por ejemplo `600x600 px` o `800x800 px`, en formato `.jpg`, `.webp` o `.png`).
+2. **Ponle el mismo nombre y reemplázala en `assets/products/`:**
+   - Abre la carpeta `c:\Users\juack\Documents\code\carta virtual\assets\products\`.
+   - Renombra tu foto exactamente igual que el archivo que deseas cambiar (por ejemplo `lomo-saltado.jpg`) y pégala en esa carpeta eligiendo **"Reemplazar el archivo en el destino"**.
+   - *(Nota: si prefieres subir tu foto como `.webp` o `.png`, por ejemplo `lomo-saltado.webp`, solo borra el archivo `lomo-saltado.jpg` anterior y el sistema detectará automáticamente el nuevo `.webp` o `.png`).*
+3. **Sube los cambios a GitHub para que se actualice en Cloudflare:**
+   - Abre una terminal en la carpeta del proyecto y ejecuta:
+     ```bash
+     git add assets/products/
+     git commit -m "Actualizar fotos reales de platos"
+     git push origin main
+     ```
+   - En menos de 1 minuto Cloudflare actualizará tu carta pública con tus nuevas fotografías.
+
+---
+
+### Lista Completa de los 78 Archivos de Imagen en `assets/products/`
+
+| Categoría | Plato / Producto | Nombre de Archivo en `assets/products/` |
+| :--- | :--- | :--- |
+| **1. Festival de Alitas** | 8 Alitas (1 Sabor) | `alitas-8-1sabor.jpg` |
+| **1. Festival de Alitas** | 8 Alitas (2 Sabores) | `alitas-8-2sabores.jpg` |
+| **1. Festival de Alitas** | 12 Alitas | `alitas-12.jpg` |
+| **1. Festival de Alitas** | 18 Alitas | `alitas-18.jpg` |
+| **1. Festival de Alitas** | 25 Alitas + 1 Lt. de Chicha | `alitas-25.jpg` |
+| **1. Festival de Alitas** | 30 Alitas + 1 Lt. de Chicha | `alitas-30.jpg` |
+| **2. Combinados** | Delicia de Cordero | `delicia-de-cordero.jpg` |
+| **2. Combinados** | Pollo a la Plancha | `pollo-a-la-plancha.jpg` |
+| **2. Combinados** | Pollo Napolitano | `pollo-napolitano.jpg` |
+| **2. Combinados** | Chicharrón de Pollo | `chicharron-de-pollo.jpg` |
+| **2. Combinados** | Pollo Broaster Especial | `pollo-broaster-especial.jpg` |
+| **2. Combinados** | Milanesa de Pollo | `milanesa-de-pollo.jpg` |
+| **2. Combinados** | Lomo Saltado | `lomo-saltado.jpg` |
+| **2. Combinados** | Lomo Montado | `lomo-montado.jpg` |
+| **2. Combinados** | Lomo a lo Pobre | `lomo-a-lo-pobre.jpg` |
+| **2. Combinados** | Tallarín Saltado | `tallarin-saltado.jpg` |
+| **2. Combinados** | Chaufa c/n Salchipapa | `chaufa-con-salchipapa.jpg` |
+| **3. Parrillas** | Pollo a la Parrilla | `pollo-a-la-parrilla.jpg` |
+| **3. Parrillas** | Chuleta de Res | `chuleta-de-res.jpg` |
+| **3. Parrillas** | Chuleta de Chancho | `chuleta-de-chancho.jpg` |
+| **3. Parrillas** | Chuleta de Cordero | `chuleta-de-cordero.jpg` |
+| **3. Parrillas** | Parrilla Doble c/ Chorizo | `parrilla-doble-chorizo.jpg` |
+| **3. Parrillas** | Parrilla Triple c/ Chorizo | `parrilla-triple-chorizo.jpg` |
+| **4. Caja China** | Caja China | `caja-china.jpg` |
+| **4. Caja China** | Caja China para 2 | `caja-china-2.jpg` |
+| **4. Caja China** | Caja China para 4 | `caja-china-4.jpg` |
+| **5. Hamburguesas** | Cordero Power | `cordero-power.jpg` |
+| **5. Hamburguesas** | Broaster BBQ | `broaster-bbq.jpg` |
+| **5. Hamburguesas** | Pollo Crocante | `pollo-crocante.jpg` |
+| **5. Hamburguesas** | La Clásica | `hamburguesa-la-clasica.jpg` |
+| **5. Hamburguesas** | La Favorita | `hamburguesa-la-favorita.jpg` |
+| **5. Hamburguesas** | La Explosiva | `hamburguesa-la-explosiva.jpg` |
+| **6. Caldos y Sopas** | Caldo de Pollo Especial | `caldo-pollo-especial.jpg` |
+| **6. Caldos y Sopas** | Caldo de Pollo Acevichado | `caldo-pollo-acevichado.jpg` |
+| **6. Caldos y Sopas** | Sopa Criolla | `sopa-criolla.jpg` |
+| **7. Salchipapas** | Salchipapas con Hotdog y Chorizo | `salchipapa-hotdog-chorizo.jpg` |
+| **7. Salchipapas** | Salchipollo al Grill | `salchipollo-al-grill.jpg` |
+| **7. Salchipapas** | Salchipollo Crocante | `salchipollo-crocante.jpg` |
+| **7. Salchipapas** | Salchialitas BBQ | `salchialitas-bbq.jpg` |
+| **7. Salchipapas** | Salchimixto Especial | `salchimixto-especial.jpg` |
+| **7. Salchipapas** | Salchiroyal Especial | `salchiroyal-especial.jpg` |
+| **8. Pizzas** | Pizza Americana | `pizza-americana.jpg` |
+| **8. Pizzas** | Pizza Peperoni | `pizza-peperoni.jpg` |
+| **8. Pizzas** | Pizza Hawaiana | `pizza-hawaiana.jpg` |
+| **8. Pizzas** | Pizza Al Tocino | `pizza-al-tocino.jpg` |
+| **8. Pizzas** | Pizza Al Pollo | `pizza-al-pollo.jpg` |
+| **8. Pizzas** | Pizza Suprema Especial | `pizza-suprema-especial.jpg` |
+| **9. Promociones** | Promoción Pizzas 2 x S/ 60 | `promo-pizzas-2x60.jpg` |
+| **9. Promociones** | Promoción Pizzas 2 x S/ 70 | `promo-pizzas-2x70.jpg` |
+| **10. Cocktail** | Pisco Sour | `pisco-sour.jpg` |
+| **10. Cocktail** | Tacna Sour | `tacna-sour.jpg` |
+| **10. Cocktail** | Mojito clásico | `mojito-clasico.jpg` |
+| **10. Cocktail** | Mojito de fresa | `mojito-fresa.jpg` |
+| **10. Cocktail** | Mojito de Mango | `mojito-mango.jpg` |
+| **10. Cocktail** | Mojito de Maracuyá | `mojito-maracuya.jpg` |
+| **11. Postres** | Wafles con frutos de estación | `wafles-frutos-estacion.jpg` |
+| **11. Postres** | Helados copa especial | `helados-copa-especial.jpg` |
+| **11. Postres** | Frappes de Oreo o Capuchino | `frappe.jpg` |
+| **11. Postres** | Milkshake de vainilla | `milkshake-vainilla.jpg` |
+| **12. Cervezas** | Cusqueña 330 ml. | `cusquena-330.jpg` |
+| **12. Cervezas** | Corona 330 ml. | `corona-330.jpg` |
+| **13. Bebidas** | Limonada clásica | `limonada-clasica.jpg` |
+| **13. Bebidas** | Limonada frozen | `limonada-frozen.jpg` |
+| **13. Bebidas** | Maracuyá | `refresco-maracuya.jpg` |
+| **13. Bebidas** | Jugo de Piña | `jugo-pina.jpg` |
+| **13. Bebidas** | Jugo de Fresa | `jugo-fresa.jpg` |
+| **13. Bebidas** | Jugo de Mango | `jugo-mango.jpg` |
+| **13. Bebidas** | Chicha Morada | `chicha-morada.jpg` |
+| **13. Bebidas** | Gaeosa Taypa | `gaseosa-taypa.jpg` |
+| **13. Bebidas** | Gaseosa de 600 | `gaseosa-600.jpg` |
+| **13. Bebidas** | Gaseosa Gordita | `gaseosa-gordita.jpg` |
+| **13. Bebidas** | Gaseosa 1 litro | `gaseosa-1l.jpg` |
+| **13. Bebidas** | Gaseosa 1 1/2 | `gaseosa-1-5l.jpg` |
+| **13. Bebidas** | Gaseosa 2 1/2 | `gaseosa-2-5l.jpg` |
+| **13. Bebidas** | Gaseosa 3 litro | `gaseosa-3l.jpg` |
+| **13. Bebidas** | Emoliente | `emoliente.jpg` |
+| **13. Bebidas** | Café | `cafe.jpg` |
+| **13. Bebidas** | Té, infusiones | `te-infusiones.jpg` |

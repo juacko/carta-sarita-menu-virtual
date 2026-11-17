@@ -27,7 +27,7 @@
       "subtitle": "1 Sabor a elección",
       "description": "Porción de 8 alitas con 1 sabor a elección de nuestros 13 sabores.",
       "basePrice": 25.00,
-      "image": "assets/products/alitas-8-1sabor.webp",
+      "image": "assets/products/alitas-8-1sabor.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -49,7 +49,7 @@
       "subtitle": "2 Sabores a elección",
       "description": "Porción de 8 alitas combinadas en 2 sabores a elección.",
       "basePrice": 26.00,
-      "image": "assets/products/alitas-8-2sabores.webp",
+      "image": "assets/products/alitas-8-2sabores.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -71,7 +71,7 @@
       "subtitle": "3 Sabores a elección",
       "description": "Porción de 12 alitas con hasta 3 sabores a elección.",
       "basePrice": 35.00,
-      "image": "assets/products/alitas-12.webp",
+      "image": "assets/products/alitas-12.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -93,7 +93,7 @@
       "subtitle": "3 Sabores a elección",
       "description": "Porción de 18 alitas con hasta 3 sabores a elección.",
       "basePrice": 45.00,
-      "image": "assets/products/alitas-18.webp",
+      "image": "assets/products/alitas-18.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -116,7 +116,7 @@
       "description": "25 alitas con hasta 5 sabores a elección. Incluye 1 Litro de Chicha.",
       "badge": "+ 1 Lt. de Chicha",
       "basePrice": 60.00,
-      "image": "assets/products/alitas-25.webp",
+      "image": "assets/products/alitas-25.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -139,7 +139,7 @@
       "description": "30 alitas con hasta 6 sabores a elección. Incluye 1 Litro de Chicha.",
       "badge": "+ 1 Lt. de Chicha",
       "basePrice": 70.00,
-      "image": "assets/products/alitas-30.webp",
+      "image": "assets/products/alitas-30.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -162,7 +162,7 @@
       "description": "Plato combinado con acompañamiento a elección: Pastas (Huancaína o Pesto), Arroz (Chaufa o al Olivo) o Arroz Blanco.",
       "basePrice": 30.00,
       "priceRangeLabel": "S/ 30.00 - S/ 33.00",
-      "image": "assets/products/delicia-de-cordero.webp",
+      "image": "assets/products/delicia-de-cordero.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -190,7 +190,7 @@
       "description": "Plato combinado con acompañamiento a elección: Pastas (Huancaína o Pesto), Arroz (Chaufa o al Olivo) o Arroz Blanco.",
       "basePrice": 17.00,
       "priceRangeLabel": "S/ 17.00 - S/ 20.00",
-      "image": "assets/products/pollo-a-la-plancha.webp",
+      "image": "assets/products/pollo-a-la-plancha.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -218,7 +218,7 @@
       "description": "Plato combinado con acompañamiento a elección: Pastas (Huancaína o Pesto), Arroz (Chaufa o al Olivo) o Arroz Blanco.",
       "basePrice": 20.00,
       "priceRangeLabel": "S/ 20.00 - S/ 23.00",
-      "image": "assets/products/pollo-napolitano.webp",
+      "image": "assets/products/pollo-napolitano.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -246,7 +246,7 @@
       "description": "Plato combinado con acompañamiento a elección: Pastas (Huancaína o Pesto), Arroz (Chaufa o al Olivo) o Arroz Blanco.",
       "basePrice": 20.00,
       "priceRangeLabel": "S/ 20.00 - S/ 23.00",
-      "image": "assets/products/chicharron-de-pollo.webp",
+      "image": "assets/products/chicharron-de-pollo.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -274,7 +274,7 @@
       "description": "Plato combinado con acompañamiento a elección: Pastas (Huancaína o Pesto), Arroz (Chaufa o al Olivo) o Arroz Blanco.",
       "basePrice": 20.00,
       "priceRangeLabel": "S/ 20.00 - S/ 23.00",
-      "image": "assets/products/pollo-broaster-especial.webp",
+      "image": "assets/products/pollo-broaster-especial.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -302,7 +302,7 @@
       "description": "Plato combinado con acompañamiento a elección: Pastas (Huancaína o Pesto), Arroz (Chaufa o al Olivo) o Arroz Blanco.",
       "basePrice": 20.00,
       "priceRangeLabel": "S/ 20.00 - S/ 23.00",
-      "image": "assets/products/milanesa-de-pollo.webp",
+      "image": "assets/products/milanesa-de-pollo.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -330,7 +330,7 @@
       "description": "Plato combinado con acompañamiento a elección: Pastas (Huancaína o Pesto), Arroz (Chaufa o al Olivo) o Arroz Blanco.",
       "basePrice": 20.00,
       "priceRangeLabel": "S/ 20.00 - S/ 23.00",
-      "image": "assets/products/lomo-saltado.webp",
+      "image": "assets/products/lomo-saltado.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -358,7 +358,7 @@
       "description": "Plato combinado con acompañamiento a elección: Pastas (Huancaína o Pesto), Arroz (Chaufa o al Olivo) o Arroz Blanco.",
       "basePrice": 22.00,
       "priceRangeLabel": "S/ 22.00 - S/ 25.00",
-      "image": "assets/products/lomo-montado.webp",
+      "image": "assets/products/lomo-montado.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -386,7 +386,7 @@
       "description": "Plato combinado con acompañamiento a elección: Pastas (Huancaína o Pesto), Arroz (Chaufa o al Olivo) o Arroz Blanco.",
       "basePrice": 30.00,
       "priceRangeLabel": "S/ 30.00 - S/ 33.00",
-      "image": "assets/products/lomo-a-lo-pobre.webp",
+      "image": "assets/products/lomo-a-lo-pobre.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -413,7 +413,7 @@
       "name": "Tallarín Saltado",
       "description": "Tallarín saltado tradicional en la sección de Combinados.",
       "basePrice": 20.00,
-      "image": "assets/products/tallarin-saltado.webp",
+      "image": "assets/products/tallarin-saltado.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -438,7 +438,7 @@
       "name": "Chaufa c/n Salchipapa",
       "description": "Combinado de Arroz Chaufa con Salchipapa.",
       "basePrice": 20.00,
-      "image": "assets/products/chaufa-con-salchipapa.webp",
+      "image": "assets/products/chaufa-con-salchipapa.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -465,7 +465,7 @@
       "description": "Pollo a la parrilla con acompañamiento a elección: Papas y Ensalada, Arroz (Chaufa o al Olivo) o Pastas (Huancaína o Pesto).",
       "basePrice": 25.00,
       "priceRangeLabel": "S/ 25.00 - S/ 28.00",
-      "image": "assets/products/pollo-a-la-parrilla.webp",
+      "image": "assets/products/pollo-a-la-parrilla.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -493,7 +493,7 @@
       "description": "Chuleta de res a la parrilla con acompañamiento a elección: Papas y Ensalada, Arroz (Chaufa o al Olivo) o Pastas (Huancaína o Pesto).",
       "basePrice": 25.00,
       "priceRangeLabel": "S/ 25.00 - S/ 28.00",
-      "image": "assets/products/chuleta-de-res.webp",
+      "image": "assets/products/chuleta-de-res.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -521,7 +521,7 @@
       "description": "Chuleta de chancho a la parrilla con acompañamiento a elección: Papas y Ensalada, Arroz (Chaufa o al Olivo) o Pastas (Huancaína o Pesto).",
       "basePrice": 25.00,
       "priceRangeLabel": "S/ 25.00 - S/ 28.00",
-      "image": "assets/products/chuleta-de-chancho.webp",
+      "image": "assets/products/chuleta-de-chancho.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -549,7 +549,7 @@
       "description": "Chuleta de cordero a la parrilla con acompañamiento a elección: Papas y Ensalada, Arroz (Chaufa o al Olivo) o Pastas (Huancaína o Pesto).",
       "basePrice": 28.00,
       "priceRangeLabel": "S/ 28.00 - S/ 30.00",
-      "image": "assets/products/chuleta-de-cordero.webp",
+      "image": "assets/products/chuleta-de-cordero.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -577,7 +577,7 @@
       "description": "Parrilla doble con chorizo y acompañamiento a elección: Papas y Ensalada, Arroz (Chaufa o al Olivo) o Pastas (Huancaína o Pesto).",
       "basePrice": 50.00,
       "priceRangeLabel": "S/ 50.00 - S/ 55.00",
-      "image": "assets/products/parrilla-doble-chorizo.webp",
+      "image": "assets/products/parrilla-doble-chorizo.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -605,7 +605,7 @@
       "description": "Parrilla triple con chorizo y acompañamiento a elección: Papas y Ensalada, Arroz (Chaufa o al Olivo) o Pastas (Huancaína o Pesto).",
       "basePrice": 65.00,
       "priceRangeLabel": "S/ 65.00 - S/ 70.00",
-      "image": "assets/products/parrilla-triple-chorizo.webp",
+      "image": "assets/products/parrilla-triple-chorizo.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -635,7 +635,7 @@
       "description": "Porción personal de Caja China. Disponible solo domingos.",
       "badge": "Solo Domingos",
       "basePrice": 30.00,
-      "image": "assets/products/caja-china.webp",
+      "image": "assets/products/caja-china.jpg",
       "available": true,
       "restriction": {
         "type": "dayOfWeek",
@@ -653,7 +653,7 @@
       "description": "Caja China para 2 personas. Disponible solo domingos.",
       "badge": "Solo Domingos",
       "basePrice": 55.00,
-      "image": "assets/products/caja-china-2.webp",
+      "image": "assets/products/caja-china-2.jpg",
       "available": true,
       "restriction": {
         "type": "dayOfWeek",
@@ -671,7 +671,7 @@
       "description": "Caja China familiar para 4 personas. Disponible solo domingos.",
       "badge": "Solo Domingos",
       "basePrice": 100.00,
-      "image": "assets/products/caja-china-4.webp",
+      "image": "assets/products/caja-china-4.jpg",
       "available": true,
       "restriction": {
         "type": "dayOfWeek",
@@ -690,7 +690,7 @@
       "description": "Cordero mechado con palta.",
       "badge": "Ganador FERITAC",
       "basePrice": 25.00,
-      "image": "assets/products/cordero-power.webp",
+      "image": "assets/products/cordero-power.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -702,7 +702,7 @@
       "subtitle": "Sanguche con ¡Alma de Gordito!",
       "description": "Muy crocante y jugosa, con salsa BBQ.",
       "basePrice": 22.00,
-      "image": "assets/products/broaster-bbq.webp",
+      "image": "assets/products/broaster-bbq.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -714,7 +714,7 @@
       "subtitle": "El más querido",
       "description": "Pollo frito al panko, con aros de cebolla crocante.",
       "basePrice": 25.00,
-      "image": "assets/products/pollo-crocante.webp",
+      "image": "assets/products/pollo-crocante.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -727,7 +727,7 @@
       "description": "Carne, mix de verduras, salsa especial.",
       "basePrice": 17.00,
       "priceRangeLabel": "S/ 17.00 - S/ 22.00",
-      "image": "assets/products/hamburguesa-la-clasica.webp",
+      "image": "assets/products/hamburguesa-la-clasica.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -754,7 +754,7 @@
       "description": "Carne, queso, tocino, huevo, mix de verduras, salsa especial.",
       "basePrice": 22.00,
       "priceRangeLabel": "S/ 22.00 - S/ 27.00",
-      "image": "assets/products/hamburguesa-la-favorita.webp",
+      "image": "assets/products/hamburguesa-la-favorita.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -781,7 +781,7 @@
       "description": "Carne, mermelada de tocino, queso, salsa especial.",
       "basePrice": 22.00,
       "priceRangeLabel": "S/ 22.00 - S/ 27.00",
-      "image": "assets/products/hamburguesa-la-explosiva.webp",
+      "image": "assets/products/hamburguesa-la-explosiva.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -808,7 +808,7 @@
       "subtitle": "Canchita - Pan tostado - Rocoto - Limón",
       "description": "Caldo de pollo especial acompañado de canchita, pan tostado, rocoto y limón.",
       "basePrice": 15.00,
-      "image": "assets/products/caldo-pollo-especial.webp",
+      "image": "assets/products/caldo-pollo-especial.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -835,7 +835,7 @@
       "subtitle": "Canchita - Pan tostado - Rocoto - Limón",
       "description": "Caldo de pollo acevichado acompañado de canchita, pan tostado, rocoto y limón.",
       "basePrice": 20.00,
-      "image": "assets/products/caldo-pollo-acevichado.webp",
+      "image": "assets/products/caldo-pollo-acevichado.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -862,7 +862,7 @@
       "subtitle": "Canchita - Pan tostado - Rocoto - Limón",
       "description": "Sopa criolla tradicional acompañada de canchita, pan tostado, rocoto y limón.",
       "basePrice": 20.00,
-      "image": "assets/products/sopa-criolla.webp",
+      "image": "assets/products/sopa-criolla.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -889,7 +889,7 @@
       "name": "Salchipapas con Hotdog y Chorizo",
       "description": "Papas andinas, chorizo, finas hierbas y hotdog ahumado.",
       "basePrice": 17.00,
-      "image": "assets/products/salchipapa-hotdog-chorizo.webp",
+      "image": "assets/products/salchipapa-hotdog-chorizo.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -900,7 +900,7 @@
       "name": "Salchipollo al Grill",
       "description": "Pollito al grill en trozos con chorizo y hotdog ahumado.",
       "basePrice": 25.00,
-      "image": "assets/products/salchipollo-al-grill.webp",
+      "image": "assets/products/salchipollo-al-grill.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -911,7 +911,7 @@
       "name": "Salchipollo Crocante",
       "description": "Pollito al panko crocante con chorizo, finas hierbas y ahumada.",
       "basePrice": 30.00,
-      "image": "assets/products/salchipollo-crocante.webp",
+      "image": "assets/products/salchipollo-crocante.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -924,7 +924,7 @@
       "badge": "2 Per.",
       "description": "8 alitas BBQ, chorizo y hotdog ahumado.",
       "basePrice": 35.00,
-      "image": "assets/products/salchialitas-bbq.webp",
+      "image": "assets/products/salchialitas-bbq.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -937,7 +937,7 @@
       "badge": "2 Per.",
       "description": "Pollitos en trozos, res, chorizo, finas hierbas y hotdog ahumado, huevo.",
       "basePrice": 35.00,
-      "image": "assets/products/salchimixto-especial.webp",
+      "image": "assets/products/salchimixto-especial.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -950,7 +950,7 @@
       "badge": "2 Per.",
       "description": "Chorizo finas hierbas, hotdog ahumado con queso y huevo.",
       "basePrice": 28.00,
-      "image": "assets/products/salchiroyal-especial.webp",
+      "image": "assets/products/salchiroyal-especial.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -963,7 +963,7 @@
       "description": "S.I. Mozarella, abundante jamón, pimiento y orégano.",
       "basePrice": 20.00,
       "priceRangeLabel": "S/ 20.00 - S/ 35.00",
-      "image": "assets/products/pizza-americana.webp",
+      "image": "assets/products/pizza-americana.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -988,7 +988,7 @@
       "description": "S.I. Mozarella, pimiento, pepperoni y orégano.",
       "basePrice": 20.00,
       "priceRangeLabel": "S/ 20.00 - S/ 35.00",
-      "image": "assets/products/pizza-peperoni.webp",
+      "image": "assets/products/pizza-peperoni.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1013,7 +1013,7 @@
       "description": "S.I. Mozarella, piña glaseada, abundante jamón y orégano.",
       "basePrice": 22.00,
       "priceRangeLabel": "S/ 22.00 - S/ 38.00",
-      "image": "assets/products/pizza-hawaiana.webp",
+      "image": "assets/products/pizza-hawaiana.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1038,7 +1038,7 @@
       "description": "S.I. Mozarella, tocino ahumado, abundante jamón y orégano.",
       "basePrice": 22.00,
       "priceRangeLabel": "S/ 22.00 - S/ 38.00",
-      "image": "assets/products/pizza-al-tocino.webp",
+      "image": "assets/products/pizza-al-tocino.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1063,7 +1063,7 @@
       "description": "S.I. Mozarella, jamón, abundante pollo y orégano.",
       "basePrice": 25.00,
       "priceRangeLabel": "S/ 25.00 - S/ 38.00",
-      "image": "assets/products/pizza-al-pollo.webp",
+      "image": "assets/products/pizza-al-pollo.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1088,7 +1088,7 @@
       "description": "S.I. Mozarella, pollo salteado, res al grill, tocino ahumado y orégano.",
       "basePrice": 30.00,
       "priceRangeLabel": "S/ 30.00 - S/ 40.00",
-      "image": "assets/products/pizza-suprema-especial.webp",
+      "image": "assets/products/pizza-suprema-especial.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1114,7 +1114,7 @@
       "description": "Pisco Sour disponible en presentación personal o por litro.",
       "basePrice": 18.00,
       "priceRangeLabel": "S/ 18.00 - S/ 30.00",
-      "image": "assets/products/pisco-sour.webp",
+      "image": "assets/products/pisco-sour.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1139,7 +1139,7 @@
       "description": "Tacna Sour disponible en presentación personal o por litro.",
       "basePrice": 18.00,
       "priceRangeLabel": "S/ 18.00 - S/ 30.00",
-      "image": "assets/products/tacna-sour.webp",
+      "image": "assets/products/tacna-sour.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1164,7 +1164,7 @@
       "description": "Mojito clásico disponible en presentación personal o por litro.",
       "basePrice": 18.00,
       "priceRangeLabel": "S/ 18.00 - S/ 30.00",
-      "image": "assets/products/mojito-clasico.webp",
+      "image": "assets/products/mojito-clasico.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1189,7 +1189,7 @@
       "description": "Mojito de fresa disponible en presentación personal o por litro.",
       "basePrice": 18.00,
       "priceRangeLabel": "S/ 18.00 - S/ 30.00",
-      "image": "assets/products/mojito-fresa.webp",
+      "image": "assets/products/mojito-fresa.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1214,7 +1214,7 @@
       "description": "Mojito de mango disponible en presentación personal o por litro.",
       "basePrice": 18.00,
       "priceRangeLabel": "S/ 18.00 - S/ 30.00",
-      "image": "assets/products/mojito-mango.webp",
+      "image": "assets/products/mojito-mango.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1239,7 +1239,7 @@
       "description": "Mojito de maracuyá disponible en presentación personal o por litro.",
       "basePrice": 18.00,
       "priceRangeLabel": "S/ 18.00 - S/ 30.00",
-      "image": "assets/products/mojito-maracuya.webp",
+      "image": "assets/products/mojito-maracuya.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1264,7 +1264,7 @@
       "name": "Wafles con frutos de estación",
       "description": "Wafles servidos con frutos frescos de estación.",
       "basePrice": 16.00,
-      "image": "assets/products/wafles-frutos-estacion.webp",
+      "image": "assets/products/wafles-frutos-estacion.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1275,7 +1275,7 @@
       "name": "Helados copa especial",
       "description": "Copa especial de helados.",
       "basePrice": 12.00,
-      "image": "assets/products/helados-copa-especial.webp",
+      "image": "assets/products/helados-copa-especial.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1286,7 +1286,7 @@
       "name": "Frappes de Oreo o Capuchino",
       "description": "Frappe a elección: sabor Oreo o Capuchino.",
       "basePrice": 15.00,
-      "image": "assets/products/frappe.webp",
+      "image": "assets/products/frappe.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1310,7 +1310,7 @@
       "name": "Milkshake de vainilla",
       "description": "Milkshake cremoso de vainilla.",
       "basePrice": 18.00,
-      "image": "assets/products/milkshake-vainilla.webp",
+      "image": "assets/products/milkshake-vainilla.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1322,7 +1322,7 @@
       "name": "Cusqueña 330 ml.",
       "description": "Cerveza Cusqueña botella personal 330 ml.",
       "basePrice": 9.00,
-      "image": "assets/products/cusquena-330.webp",
+      "image": "assets/products/cusquena-330.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1333,7 +1333,7 @@
       "name": "Corona 330 ml.",
       "description": "Cerveza Corona botella personal 330 ml.",
       "basePrice": 9.00,
-      "image": "assets/products/corona-330.webp",
+      "image": "assets/products/corona-330.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1347,7 +1347,7 @@
       "description": "Limonada clásica natural disponible en vaso o litro.",
       "basePrice": 8.00,
       "priceRangeLabel": "S/ 8.00 - S/ 12.00",
-      "image": "assets/products/limonada-clasica.webp",
+      "image": "assets/products/limonada-clasica.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1373,7 +1373,7 @@
       "description": "Limonada frozen disponible en vaso o litro.",
       "basePrice": 10.00,
       "priceRangeLabel": "S/ 10.00 - S/ 15.00",
-      "image": "assets/products/limonada-frozen.webp",
+      "image": "assets/products/limonada-frozen.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1399,7 +1399,7 @@
       "description": "Refresco natural de maracuyá disponible en vaso o litro.",
       "basePrice": 8.00,
       "priceRangeLabel": "S/ 8.00 - S/ 12.00",
-      "image": "assets/products/refresco-maracuya.webp",
+      "image": "assets/products/refresco-maracuya.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1425,7 +1425,7 @@
       "description": "Jugo natural de piña disponible en vaso o litro.",
       "basePrice": 8.00,
       "priceRangeLabel": "S/ 8.00 - S/ 15.00",
-      "image": "assets/products/jugo-pina.webp",
+      "image": "assets/products/jugo-pina.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1451,7 +1451,7 @@
       "description": "Jugo natural de fresa disponible en vaso o litro.",
       "basePrice": 8.00,
       "priceRangeLabel": "S/ 8.00 - S/ 15.00",
-      "image": "assets/products/jugo-fresa.webp",
+      "image": "assets/products/jugo-fresa.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1477,7 +1477,7 @@
       "description": "Jugo natural de mango disponible en vaso o litro.",
       "basePrice": 8.00,
       "priceRangeLabel": "S/ 8.00 - S/ 15.00",
-      "image": "assets/products/jugo-mango.webp",
+      "image": "assets/products/jugo-mango.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1503,7 +1503,7 @@
       "description": "Chicha morada tradicional disponible en vaso o litro.",
       "basePrice": 8.00,
       "priceRangeLabel": "S/ 8.00 - S/ 12.00",
-      "image": "assets/products/chicha-morada.webp",
+      "image": "assets/products/chicha-morada.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1529,7 +1529,7 @@
       "searchAliases": ["Gaseosa Taypa"],
       "description": "Gaseosa presentación Taypa.",
       "basePrice": 5.00,
-      "image": "assets/products/gaseosa-taypa.webp",
+      "image": "assets/products/gaseosa-taypa.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1541,7 +1541,7 @@
       "name": "Gaseosa de 600",
       "description": "Gaseosa presentación 600 ml.",
       "basePrice": 6.00,
-      "image": "assets/products/gaseosa-600.webp",
+      "image": "assets/products/gaseosa-600.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1553,7 +1553,7 @@
       "name": "Gaseosa Gordita",
       "description": "Gaseosa presentación Gordita.",
       "basePrice": 6.00,
-      "image": "assets/products/gaseosa-gordita.webp",
+      "image": "assets/products/gaseosa-gordita.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1565,7 +1565,7 @@
       "name": "Gaseosa 1 litro",
       "description": "Gaseosa de 1 litro.",
       "basePrice": 8.00,
-      "image": "assets/products/gaseosa-1l.webp",
+      "image": "assets/products/gaseosa-1l.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1577,7 +1577,7 @@
       "name": "Gaseosa 1 1/2",
       "description": "Gaseosa de 1 litro y medio.",
       "basePrice": 10.00,
-      "image": "assets/products/gaseosa-1-5l.webp",
+      "image": "assets/products/gaseosa-1-5l.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1589,7 +1589,7 @@
       "name": "Gaseosa 2 1/2",
       "description": "Gaseosa de 2 litros y medio.",
       "basePrice": 14.00,
-      "image": "assets/products/gaseosa-2-5l.webp",
+      "image": "assets/products/gaseosa-2-5l.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1601,7 +1601,7 @@
       "name": "Gaseosa 3 litro",
       "description": "Gaseosa familiar de 3 litros.",
       "basePrice": 16.00,
-      "image": "assets/products/gaseosa-3l.webp",
+      "image": "assets/products/gaseosa-3l.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1614,7 +1614,7 @@
       "description": "Emoliente tradicional disponible en vaso o litro.",
       "basePrice": 6.00,
       "priceRangeLabel": "S/ 6.00 - S/ 12.00",
-      "image": "assets/products/emoliente.webp",
+      "image": "assets/products/emoliente.jpg",
       "available": true,
       "variantGroups": [
         {
@@ -1639,7 +1639,7 @@
       "name": "Café",
       "description": "Taza de café caliente.",
       "basePrice": 5.00,
-      "image": "assets/products/cafe.webp",
+      "image": "assets/products/cafe.jpg",
       "available": true,
       "variantGroups": []
     },
@@ -1651,7 +1651,7 @@
       "name": "Té, infusiones",
       "description": "Té o infusión caliente a elección.",
       "basePrice": 4.00,
-      "image": "assets/products/te-infusiones.webp",
+      "image": "assets/products/te-infusiones.jpg",
       "available": true,
       "variantGroups": []
     }
