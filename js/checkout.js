@@ -77,7 +77,7 @@
     /**
      * Valida los campos según modalidad:
      * - En Salón y Recoger (Llevar): Nombre, Teléfono y Mesa son opcionales.
-     * - En Delivery: Dirección y Referencia son obligatorias.
+     * - En Delivery: Dirección, Referencia y Teléfono son obligatorios.
      */
     validateForm() {
       const CONFIG = window.LaSarita.CONFIG;
@@ -89,11 +89,6 @@
       const phoneClean = (this.customerData.phone || '').trim();
       const phoneDigits = phoneClean.replace(/\D/g, '');
 
-      // Si el cliente escribió un teléfono opcionalmente, validar que tenga al menos 6 dígitos
-      if (phoneClean.length > 0 && (phoneDigits.length < 6 || phoneDigits.length > 15)) {
-        errors.phone = 'Ingresa un número de teléfono válido o déjalo en blanco.';
-      }
-
       if (isDelivery) {
         const addressClean = (this.customerData.address || '').trim();
         const refClean = (this.customerData.reference || '').trim();
@@ -103,6 +98,14 @@
         }
         if (refClean.length < 2) {
           errors.reference = 'Ingresa una referencia de ubicación.';
+        }
+        if (phoneDigits.length < 7 || phoneDigits.length > 15) {
+          errors.phone = 'El número de teléfono es obligatorio para Delivery.';
+        }
+      } else {
+        // En Salón o Recoger, solo validar formato si decidió escribir un teléfono
+        if (phoneClean.length > 0 && (phoneDigits.length < 6 || phoneDigits.length > 15)) {
+          errors.phone = 'Ingresa un número de teléfono válido o déjalo en blanco.';
         }
       }
 
@@ -456,7 +459,11 @@
 
                 <div class="form-field ${this.errors.phone ? 'has-error' : ''}">
                   <label for="checkout-phone-input" class="form-label">
-                    Teléfono / Celular <span class="variant-option-sublabel" style="display:inline">(opcional)</span>
+                    Teléfono / Celular ${
+                      isDelivery
+                        ? '<span class="req">*</span>'
+                        : '<span class="variant-option-sublabel" style="display:inline">(opcional)</span>'
+                    }
                   </label>
                   <input
                     type="tel"
