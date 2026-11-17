@@ -31,8 +31,8 @@
       return window.location.origin;
     }
 
-    // URL del túnel Cloudflare hacia pos-sarita (configurable aquí cuando actives tu túnel)
-    return '';
+    // URL del túnel Cloudflare hacia pos-sarita
+    return 'https://exciting-exercise-enb-kodak.trycloudflare.com';
   }
 
   const CONFIG = Object.freeze({
