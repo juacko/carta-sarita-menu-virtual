@@ -32,7 +32,7 @@
     }
 
     // URL del túnel Cloudflare hacia pos-sarita
-    return 'https://iowa-indicating-missed-separated.trycloudflare.com';
+    return 'https://screenshots-configurations-self-findlaw.trycloudflare.com';
   }
 
   const CONFIG = Object.freeze({
