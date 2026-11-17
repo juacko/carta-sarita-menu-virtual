@@ -11,7 +11,8 @@
       ProductModalModule,
       CheckoutModule,
       QRModule,
-      MenuModule
+      MenuModule,
+      PosIntegrationModule
     } = window.LaSarita;
 
     if (OrderTypeModule) OrderTypeModule.init();
@@ -20,5 +21,6 @@
     if (CheckoutModule) CheckoutModule.init();
     if (QRModule) QRModule.init();
     if (MenuModule) await MenuModule.init();
+    if (PosIntegrationModule) PosIntegrationModule.init();
   });
 })(window);

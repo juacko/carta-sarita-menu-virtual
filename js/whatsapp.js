@@ -1,7 +1,7 @@
 /**
  * Módulo de Integración con WhatsApp Click to Chat
- * Genera un mensaje estructurado, legible y codificado con encodeURIComponent
- * omitiendo limpiamente los campos opcionales que el cliente deje en blanco.
+ * Incluye el código de solicitud POS (cuando el pedido fue registrado en el banner
+ * de aceptación de POS Sarita) y asigna mesa únicamente cuando provino del QR físico.
  */
 (function (window) {
   'use strict';
@@ -20,17 +20,20 @@
 
       // 1. Nombre del restaurante y encabezado
       lines.push(`*${CONFIG.restaurant.name.toUpperCase()}*`);
-      lines.push('📋 *NUEVO PEDIDO - CARTA VIRTUAL*');
+      if (orderSummary.posWebCode) {
+        lines.push(`📋 *NUEVO PEDIDO (${orderSummary.posWebCode})*`);
+      } else {
+        lines.push('📋 *NUEVO PEDIDO - CARTA VIRTUAL*');
+      }
       lines.push('--------------------------------');
 
-      // 2. Modalidad de pedido y 3. Número de mesa si corresponde
+      // 2. Modalidad de pedido y 3. Mesa (solo si fue leída de QR físico; de lo contrario se asigna al llegar)
       if (orderSummary.isSalon) {
         lines.push('🍽️ *Modalidad:* CONSUMO EN SALÓN');
-        if (orderSummary.tableNumber) {
-          const qrTag = orderSummary.isTableLockedFromQr ? ' (Identificada por QR)' : '';
-          lines.push(`📍 *Mesa N°:* ${orderSummary.tableNumber}${qrTag}`);
+        if (orderSummary.isTableLockedFromQr && orderSummary.tableNumber) {
+          lines.push(`📍 *Mesa N°:* ${orderSummary.tableNumber} (Identificada por QR en mesa)`);
         } else {
-          lines.push('📍 *Mesa:* Por confirmar en salón');
+          lines.push('📍 *Mesa:* Por asignar al llegar al local');
         }
       } else if (orderSummary.isPickup) {
         lines.push('🛍️ *Modalidad:* PARA LLEVAR (RECOGER EN LOCAL)');
@@ -38,7 +41,7 @@
         lines.push('🛵 *Modalidad:* DELIVERY');
       }
 
-      // 4. Datos del cliente (solo imprime los campos que tengan información)
+      // 4. Datos del cliente
       const customerLines = [];
       if (orderSummary.customer.name) {
         customerLines.push(`👤 *Nombre:* ${orderSummary.customer.name}`);
@@ -63,7 +66,7 @@
 
       lines.push('--------------------------------');
 
-      // 5. Productos, variantes, presentaciones, cantidades, observaciones, precio unitario y subtotales
+      // 5. Detalle de productos
       lines.push('*DETALLE DEL PEDIDO:*');
 
       orderSummary.items.forEach((item, index) => {

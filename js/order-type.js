@@ -1,7 +1,7 @@
 /**
- * Módulo de Modalidad de Pedido, Modal de Bienvenida y Detección de Mesa por QR
- * Muestra un modal de bienvenida inicial limpio para elegir entre Consumo en Salón,
- * Recoger (Para Llevar) y Delivery, liberando el espacio superior de la carta.
+ * Módulo de Modalidad de Pedido, Modal de Bienvenida y Detección de Mesa Exclusiva por QR
+ * La mesa solo se asigna cuando el cliente escanea el QR físico de su mesa (?mesa=01);
+ * nunca permite que un cliente desde fuera se auto-asigne una mesa manualmente.
  */
 (function (window) {
   'use strict';
@@ -11,14 +11,13 @@
   const OrderTypeModule = {
     currentType: 'salon',
     tableNumber: '',
-    needsStaffAssistanceForTable: false,
     isTableLockedFromQr: false,
     isWelcomeOpen: false,
 
     init() {
       const CONFIG = window.LaSarita.CONFIG;
 
-      // 1. Detectar parámetro ?mesa= en la URL
+      // 1. Detectar parámetro ?mesa= en la URL (única vía válida para fijar mesa desde el cliente)
       const urlParams = new URLSearchParams(window.location.search);
       const rawMesa = urlParams.get(CONFIG.deployment.tableParamName);
 
@@ -38,17 +37,16 @@
           this.isTableLockedFromQr = true;
           this.currentType = CONFIG.orderTypes.DINE_IN;
         } else {
+          // Sin QR de mesa: no se asigna ninguna mesa hasta llegar al local
+          this.tableNumber = '';
+          this.isTableLockedFromQr = false;
           const savedType = this.loadSavedOrderType();
           this.currentType = savedType || CONFIG.orderTypes.DINE_IN;
-          if (sessionTableData && sessionTableData.tableNumber) {
-            this.tableNumber = sessionTableData.tableNumber;
-          }
         }
       }
 
       this.renderModeBar();
 
-      // Mostrar modal de bienvenida al inicio de la sesión
       if (!this.wasWelcomeShownInSession()) {
         this.openWelcomeModal();
       }
@@ -71,9 +69,7 @@
     markWelcomeShown() {
       try {
         sessionStorage.setItem(WELCOME_SESSION_KEY, '1');
-      } catch (e) {
-        // Ignorar si sessionStorage está restringido
-      }
+      } catch (e) {}
     },
 
     sanitizeTableCode(raw) {
@@ -87,9 +83,7 @@
           CONFIG.storageKeys.tableNumber,
           JSON.stringify({ tableNumber: tableNum, locked: Boolean(locked) })
         );
-      } catch (e) {
-        // Ignorar
-      }
+      } catch (e) {}
     },
 
     loadSessionTable() {
@@ -106,9 +100,7 @@
       const CONFIG = window.LaSarita.CONFIG;
       try {
         localStorage.setItem(CONFIG.storageKeys.orderType, type);
-      } catch (e) {
-        // Ignorar
-      }
+      } catch (e) {}
     },
 
     loadSavedOrderType() {
@@ -166,7 +158,7 @@
         new CustomEvent('ordertype:changed', {
           detail: {
             orderType: this.currentType,
-            tableNumber: this.tableNumber,
+            tableNumber: this.isTableLockedFromQr ? this.tableNumber : '',
             isTableLockedFromQr: this.isTableLockedFromQr
           }
         })
@@ -175,18 +167,6 @@
       return true;
     },
 
-    setManualTableNumber(value) {
-      if (this.isTableLockedFromQr) {
-        return;
-      }
-      this.tableNumber = this.sanitizeTableCode(value);
-      this.saveSessionTable(this.tableNumber, false);
-      this.renderModeBar();
-    },
-
-    /**
-     * Renderiza la píldora compacta junto al buscador (sin ocupar espacio con un banner fijo)
-     */
     renderModeBar() {
       const { escapeHtml } = window.LaSarita.Utils;
       const CONFIG = window.LaSarita.CONFIG;
@@ -200,9 +180,10 @@
       let modeText = 'Delivery';
       if (isSalon) {
         icon = '🍽️';
-        modeText = this.tableNumber
-          ? `En Salón • Mesa ${escapeHtml(this.tableNumber)}`
-          : 'Consumo en Salón';
+        modeText =
+          this.isTableLockedFromQr && this.tableNumber
+            ? `En Salón • Mesa ${escapeHtml(this.tableNumber)}`
+            : 'Consumo en Salón';
       } else if (isPickup) {
         icon = '🛍️';
         modeText = 'Recoger (Para Llevar)';
@@ -229,9 +210,6 @@
       }
     },
 
-    /**
-     * Abre el modal de bienvenida y selección de modalidad
-     */
     openWelcomeModal() {
       const { escapeHtml } = window.LaSarita.Utils;
       const CONFIG = window.LaSarita.CONFIG;
@@ -246,7 +224,7 @@
       const salonDesc =
         this.isTableLockedFromQr && this.tableNumber
           ? `Mesa ${escapeHtml(this.tableNumber)} identificada por QR`
-          : 'Para disfrutar aquí en nuestras mesas';
+          : 'Nuestro personal te asignará mesa al llegar al local';
 
       container.innerHTML = `
         <div class="welcome-modal-backdrop" id="welcome-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="welcome-dialog-title">

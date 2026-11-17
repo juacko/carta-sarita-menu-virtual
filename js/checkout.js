@@ -1,14 +1,18 @@
 /**
- * Módulo de Checkout (Pedido Rápido sin Fricción)
- * En Consumo en Salón y Recoger (Llevar), los campos de Nombre, Teléfono y Mesa
- * son opcionales para permitir enviar el pedido a WhatsApp en un solo toque.
+ * Módulo de Checkout (Integrado con POS Sarita + WhatsApp)
+ * - En Consumo en Salón: no permite auto-asignación manual de mesa (solo se toma de QR físico
+ *   o se asigna por el personal al llegar al local).
+ * - En Salón y Recoger (Llevar): Nombre y Teléfono son opcionales.
+ * - En Delivery: Dirección, Referencia y Teléfono son obligatorios.
  */
 (function (window) {
   'use strict';
 
   const CheckoutModule = {
     isOpen: false,
+    isSubmitting: false,
     hasOpenedWhatsApp: false,
+    lastPosWebCode: null,
     customerData: {
       name: '',
       phone: '',
@@ -72,13 +76,9 @@
       };
       this.errors = {};
       this.hasOpenedWhatsApp = false;
+      this.lastPosWebCode = null;
     },
 
-    /**
-     * Valida los campos según modalidad:
-     * - En Salón y Recoger (Llevar): Nombre, Teléfono y Mesa son opcionales.
-     * - En Delivery: Dirección, Referencia y Teléfono son obligatorios.
-     */
     validateForm() {
       const CONFIG = window.LaSarita.CONFIG;
       const OrderTypeModule = window.LaSarita.OrderTypeModule;
@@ -103,7 +103,6 @@
           errors.phone = 'El número de teléfono es obligatorio para Delivery.';
         }
       } else {
-        // En Salón o Recoger, solo validar formato si decidió escribir un teléfono
         if (phoneClean.length > 0 && (phoneDigits.length < 6 || phoneDigits.length > 15)) {
           errors.phone = 'Ingresa un número de teléfono válido o déjalo en blanco.';
         }
@@ -128,13 +127,20 @@
       const deliveryCost =
         isDelivery && deliveryCostDefined ? Number(CONFIG.delivery.baseCost) || 0 : null;
 
+      // En Salón solo se envía número de mesa si fue escaneado del QR físico de la mesa
+      const qrTable =
+        isSalon && OrderTypeModule.isTableLockedFromQr && OrderTypeModule.tableNumber
+          ? OrderTypeModule.tableNumber
+          : null;
+
       return {
         orderType: currentType,
         isSalon,
         isPickup,
         isDelivery,
-        tableNumber: isSalon ? (OrderTypeModule.tableNumber || '').trim() || null : null,
-        isTableLockedFromQr: Boolean(OrderTypeModule.isTableLockedFromQr),
+        tableNumber: qrTable,
+        isTableLockedFromQr: Boolean(qrTable),
+        posWebCode: this.lastPosWebCode || null,
         customer: {
           name: (this.customerData.name || '').trim(),
           phone: (this.customerData.phone || '').trim(),
@@ -181,25 +187,18 @@
             <div class="table-qr-locked-box" role="status">
               <div>
                 <strong>🔒 Mesa N° ${escapeHtml(OrderTypeModule.tableNumber)}</strong>
-                <div>Identificada automáticamente mediante código QR de mesa.</div>
+                <div>Identificada automáticamente mediante el código QR de tu mesa.</div>
               </div>
-              <span class="badge badge-info">Confirmada</span>
+              <span class="badge badge-info">QR Mesa</span>
             </div>
           `;
         } else {
           modeContextHtml = `
-            <div class="form-field">
-              <label for="checkout-table-input" class="form-label">
-                Número de mesa <span class="variant-option-sublabel" style="display:inline">(opcional)</span>
-              </label>
-              <input
-                type="text"
-                id="checkout-table-input"
-                class="form-input"
-                maxlength="10"
-                placeholder="Ej. 01, 02... (o déjalo en blanco)"
-                value="${escapeHtml(OrderTypeModule.tableNumber || '')}"
-              />
+            <div class="table-qr-locked-box" role="status">
+              <div>
+                <strong>🍽️ Consumo en Salón</strong>
+                <div>Nuestro personal te asignará una mesa disponible cuando llegues al local.</div>
+              </div>
             </div>
           `;
         }
@@ -295,15 +294,15 @@
 
       let totalsHtml = '';
       if (isSalon) {
+        const mesaTag =
+          OrderTypeModule.isTableLockedFromQr && OrderTypeModule.tableNumber
+            ? `(Mesa ${escapeHtml(OrderTypeModule.tableNumber)})`
+            : '(Mesa por asignar al llegar)';
         totalsHtml = `
           <div class="checkout-totals-box">
             <div class="checkout-total-line">
               <span>Modalidad</span>
-              <span>Consumo en Salón ${
-                OrderTypeModule.tableNumber
-                  ? `(Mesa ${escapeHtml(OrderTypeModule.tableNumber)})`
-                  : ''
-              }</span>
+              <span>Consumo en Salón ${mesaTag}</span>
             </div>
             <div class="checkout-total-line">
               <span>Subtotal de productos</span>
@@ -356,7 +355,7 @@
       }
 
       const step2Title = isSalon
-        ? 'Datos de mesa / cliente (opcional)'
+        ? 'Datos para Consumo en Salón'
         : isPickup
         ? 'Datos para recoger (opcional)'
         : 'Datos para entrega por Delivery';
@@ -516,8 +515,17 @@
           </div>
 
           <footer class="checkout-footer">
-            <button type="button" class="btn-whatsapp-submit" id="checkout-send-whatsapp-btn">
-              <span>💬 Enviar pedido por WhatsApp</span>
+            <button
+              type="button"
+              class="btn-whatsapp-submit"
+              id="checkout-send-whatsapp-btn"
+              ${this.isSubmitting ? 'disabled' : ''}
+            >
+              <span>${
+                this.isSubmitting
+                  ? '⏳ Registrando pedido...'
+                  : '💬 Enviar pedido por WhatsApp'
+              }</span>
             </button>
           </footer>
         </div>
@@ -530,6 +538,7 @@
       const OrderTypeModule = window.LaSarita.OrderTypeModule;
       const CartModule = window.LaSarita.CartModule;
       const WhatsAppModule = window.LaSarita.WhatsAppModule;
+      const PosIntegrationModule = window.LaSarita.PosIntegrationModule;
 
       const closeBtn = modalEl.querySelector('#checkout-close-btn');
       const backBtn = modalEl.querySelector('#checkout-back-to-cart-btn');
@@ -568,7 +577,6 @@
       const phoneInput = modalEl.querySelector('#checkout-phone-input');
       const addressInput = modalEl.querySelector('#checkout-address-input');
       const referenceInput = modalEl.querySelector('#checkout-reference-input');
-      const tableInput = modalEl.querySelector('#checkout-table-input');
 
       if (nameInput) {
         nameInput.addEventListener('input', e => {
@@ -606,14 +614,10 @@
         });
       }
 
-      if (tableInput) {
-        tableInput.addEventListener('input', e => {
-          OrderTypeModule.setManualTableNumber(e.target.value);
-        });
-      }
-
       if (sendBtn) {
-        sendBtn.addEventListener('click', () => {
+        sendBtn.addEventListener('click', async () => {
+          if (this.isSubmitting) return;
+
           if (!this.validateForm()) {
             this.render();
             const firstErr = modalEl.querySelector('.form-field.has-error');
@@ -623,7 +627,23 @@
             return;
           }
 
+          this.isSubmitting = true;
+          this.render();
+
           const orderSummary = this.buildOrderSummary();
+
+          // 1. Enviar al banner de aceptación de POS Sarita (si el túnel/servidor está activo)
+          if (PosIntegrationModule) {
+            const posRes = await PosIntegrationModule.submitOrderToPos(orderSummary);
+            if (posRes && posRes.codigo) {
+              this.lastPosWebCode = posRes.codigo;
+              orderSummary.posWebCode = posRes.codigo;
+            }
+          }
+
+          this.isSubmitting = false;
+
+          // 2. Abrir WhatsApp para terminar de confirmar el pedido con el cliente
           const whatsappUrl = WhatsAppModule.buildOrderUrl(orderSummary);
           if (whatsappUrl) {
             this.hasOpenedWhatsApp = true;
